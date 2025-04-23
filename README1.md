@@ -141,13 +141,13 @@ Pada tahap ini, dilakukan proses pemodelan untuk memprediksi apakah seorang pela
 
 Model yang digunakan dalam proyek ini adalah **Random Forest Classifier**, yaitu ensemble learning method berbasis decision tree yang bekerja dengan membangun beberapa decision tree dan menggabungkannya untuk menghasilkan prediksi yang lebih stabil dan akurat.
 
-#### ✅ Kelebihan Random Forest
+#### Kelebihan Random Forest
 - Tahan terhadap overfitting, terutama pada dataset besar dan kompleks.
 - Dapat menangani fitur kategorikal dan numerik secara bersamaan.
 - Mampu memberikan estimasi pentingnya fitur.
 - Hasil yang lebih stabil dibanding decision tree tunggal.
 
-#### ⚠️ Kekurangan Random Forest
+#### Kekurangan Random Forest
 - Kurang efisien pada data real-time karena kompleksitas tinggi.
 - Model sulit untuk diinterpretasikan dibanding decision tree biasa.
 
@@ -209,14 +209,40 @@ Model akhir dipilih karena memberikan keseimbangan terbaik antara akurasi dan ko
 
 ## Evaluation
 
-Pada tahap evaluasi, digunakan beberapa metrik evaluasi klasifikasi untuk menilai performa model, yaitu:
+Pada tahap evaluasi, digunakan beberapa metrik evaluasi klasifikasi untuk menilai performa model. Karena proyek ini merupakan permasalahan klasifikasi biner (membeli mobil atau tidak), maka diperlukan lebih dari sekadar akurasi untuk menilai performa model secara menyeluruh. Metrik yang digunakan adalah:
 
-- **Accuracy**: Persentase prediksi yang benar dari seluruh prediksi.
-- **Precision**: Proporsi prediksi positif yang benar-benar positif.
-- **Recall**: Proporsi data positif yang berhasil terdeteksi oleh model.
-- **F1-score**: Harmonik rata-rata antara precision dan recall, berguna saat kita ingin keseimbangan antara keduanya.
+### Confusion Matrix
 
-Metrik ini sangat penting karena proyek ini merupakan problem klasifikasi biner (membeli mobil atau tidak), sehingga tidak cukup hanya mengandalkan akurasi saja. Evaluasi menyeluruh dengan precision, recall, dan F1-score memberikan gambaran yang lebih akurat terhadap kinerja model.
+Confusion matrix adalah representasi visual dari hasil prediksi model klasifikasi, yang memperlihatkan jumlah prediksi benar dan salah untuk masing-masing kelas.
+
+|                | Predicted Positive (1) | Predicted Negative (0) |
+|----------------|------------------------|-------------------------|
+| Actual Positive (1)   | True Positive (TP)       | False Negative (FN)        |
+| Actual Negative (0)   | False Positive (FP)      | True Negative (TN)         |
+
+**Penjelasan:**
+- **True Positive (TP)**: Prediksi benar untuk kelas positif.
+- **True Negative (TN)**: Prediksi benar untuk kelas negatif.
+- **False Positive (FP)**: Prediksi positif padahal sebenarnya negatif (type I error).
+- **False Negative (FN)**: Prediksi negatif padahal sebenarnya positif (type II error).
+
+**Rumus dari metrik evaluasi berdasarkan confusion matrix:**
+
+## Rumus dari Metrik Evaluasi Berdasarkan Confusion Matrix
+
+- **Accuracy**  
+  Accuracy = (TP + TN)/(TP + TN + FP + FN)
+
+- **Precision**  
+  Precision = TP/(TP + FP)
+
+- **Recall (Sensitivity)**  
+  Recall = TP/(TP + FN)
+
+- **F1-score**  
+  F1-score = (2 x Precision x Recall)/(Precision + Recall)
+
+Metrik ini sangat penting karena proyek ini merupakan problem klasifikasi biner (**membeli mobil** atau **tidak**), sehingga tidak cukup hanya mengandalkan akurasi saja. Evaluasi menyeluruh dengan precision, recall, dan F1-score memberikan gambaran yang lebih akurat terhadap kinerja model.
 
 ---
 
@@ -261,7 +287,7 @@ Tuning dilakukan menggunakan `GridSearchCV` dengan 384 kombinasi parameter dan 5
 
 ## Kesimpulan Evaluasi
 
-Model yang telah melalui proses tuning menunjukkan peningkatan akurasi dari **92.50%** menjadi **93.33%**. Selain itu, nilai **f1-score** meningkat untuk kedua kelas, yang menunjukkan bahwa model menjadi lebih seimbang dalam mendeteksi kedua kategori (**membeli** dan **tidak membeli** mobil).
+Model yang telah melalui proses tuning menunjukkan peningkatan akurasi dari **92.50%** menjadi **93.33%**. Selain itu, nPeningkatan juga terlihat pada metrik precision, recall, dan F1-score, yang menandakan model lebih seimbang dalam mendeteksi dua kelas (**membeli** dan **tidak membeli mobil**). Hal ini penting untuk menjaga kualitas prediksi dalam konteks pemasaran dan targeting pelanggan.
 
 Dengan demikian, **hyperparameter tuning** terbukti efektif dalam meningkatkan performa model **Random Forest** pada kasus klasifikasi daya beli pelanggan ini.
 
