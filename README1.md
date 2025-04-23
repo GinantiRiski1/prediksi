@@ -134,28 +134,135 @@ Tahapan ini mencakup berbagai proses pembersihan dan transformasi data agar siap
 
 
 ## Modeling
-Tahapan ini membahas mengenai model machine learning yang digunakan untuk menyelesaikan permasalahan. Anda perlu menjelaskan tahapan dan parameter yang digunakan pada proses pemodelan.
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan kelebihan dan kekurangan dari setiap algoritma yang digunakan.
-- Jika menggunakan satu algoritma pada solution statement, lakukan proses improvement terhadap model dengan hyperparameter tuning. **Jelaskan proses improvement yang dilakukan**.
-- Jika menggunakan dua atau lebih algoritma pada solution statement, maka pilih model terbaik sebagai solusi. **Jelaskan mengapa memilih model tersebut sebagai model terbaik**.
+Pada tahap ini, dilakukan proses pemodelan untuk memprediksi apakah seorang pelanggan akan membeli mobil atau tidak berdasarkan fitur-fitur seperti usia, gender, dan pendapatan tahunan.
+
+### Algoritma yang Digunakan
+
+Model yang digunakan dalam proyek ini adalah **Random Forest Classifier**, yaitu ensemble learning method berbasis decision tree yang bekerja dengan membangun beberapa decision tree dan menggabungkannya untuk menghasilkan prediksi yang lebih stabil dan akurat.
+
+#### ✅ Kelebihan Random Forest
+- Tahan terhadap overfitting, terutama pada dataset besar dan kompleks.
+- Dapat menangani fitur kategorikal dan numerik secara bersamaan.
+- Mampu memberikan estimasi pentingnya fitur.
+- Hasil yang lebih stabil dibanding decision tree tunggal.
+
+#### ⚠️ Kekurangan Random Forest
+- Kurang efisien pada data real-time karena kompleksitas tinggi.
+- Model sulit untuk diinterpretasikan dibanding decision tree biasa.
+
+### Baseline Model
+
+Baseline model dibuat menggunakan parameter default dari `RandomForestClassifier`:
+
+```python
+from sklearn.ensemble import RandomForestClassifier
+
+model_rf = RandomForestClassifier(random_state=42)
+model_rf.fit(X_train, y_train)
+y_pred = model_rf.predict(X_test)
+```
+
+### Model Improvement: Hyperparameter Tuning
+Untuk meningkatkan performa baseline, dilakukan tuning hyperparameter menggunakan GridSearchCV dari ```python sklearn.model_selection ```.
+
+Parameter grid yang diuji:
+```python
+param_grid = {
+    'n_estimators': [50, 100, 150, 200],
+    'max_depth': [10, 20, 30, 40],
+    'min_samples_split': [2, 5, 10, 15],
+    'min_samples_leaf': [1, 2, 4],
+    'max_features': ['sqrt', 'log2']
+}
+```
+Grid search dilakukan dengan 5-fold cross-validation:
+
+```python
+from sklearn.model_selection import GridSearchCV
+grid_search = GridSearchCV(
+    estimator=RandomForestClassifier(random_state=42),
+    param_grid=param_grid,
+    cv=5,
+    scoring='accuracy',
+    n_jobs=-1,
+    verbose=1
+)
+grid_search.fit(X_train, y_train)
+```
+
+Hasil Tuning
+Hasil dari GridSearchCV menunjukkan parameter terbaik sebagai berikut:
+
+```python
+Best Parameters: {'max_depth': 20, 'max_features': 'sqrt', 'min_samples_leaf': 1, 'min_samples_split': 10, 'n_estimators': 200}
+```
+
+Model terbaik kemudian digunakan untuk prediksi pada data testing dan dievaluasi dengan:
+
+```python
+best_rf = grid_search.best_estimator_
+y_pred = best_rf.predict(X_test)
+```
+
+Model akhir dipilih karena memberikan keseimbangan terbaik antara akurasi dan kompleksitas serta menunjukkan generalisasi yang baik terhadap data baru.
 
 ## Evaluation
-Pada bagian ini anda perlu menyebutkan metrik evaluasi yang digunakan. Lalu anda perlu menjelaskan hasil proyek berdasarkan metrik evaluasi yang digunakan.
 
-Sebagai contoh, Anda memiih kasus klasifikasi dan menggunakan metrik **akurasi, precision, recall, dan F1 score**. Jelaskan mengenai beberapa hal berikut:
-- Penjelasan mengenai metrik yang digunakan
-- Menjelaskan hasil proyek berdasarkan metrik evaluasi
+Pada tahap evaluasi, digunakan beberapa metrik evaluasi klasifikasi untuk menilai performa model, yaitu:
 
-Ingatlah, metrik evaluasi yang digunakan harus sesuai dengan konteks data, problem statement, dan solusi yang diinginkan.
+- **Accuracy**: Persentase prediksi yang benar dari seluruh prediksi.
+- **Precision**: Proporsi prediksi positif yang benar-benar positif.
+- **Recall**: Proporsi data positif yang berhasil terdeteksi oleh model.
+- **F1-score**: Harmonik rata-rata antara precision dan recall, berguna saat kita ingin keseimbangan antara keduanya.
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan formula metrik dan bagaimana metrik tersebut bekerja.
+Metrik ini sangat penting karena proyek ini merupakan problem klasifikasi biner (membeli mobil atau tidak), sehingga tidak cukup hanya mengandalkan akurasi saja. Evaluasi menyeluruh dengan precision, recall, dan F1-score memberikan gambaran yang lebih akurat terhadap kinerja model.
 
-**---Ini adalah bagian akhir laporan---**
+---
 
-_Catatan:_
-- _Anda dapat menambahkan gambar, kode, atau tabel ke dalam laporan jika diperlukan. Temukan caranya pada contoh dokumen markdown di situs editor [Dillinger](https://dillinger.io/), [Github Guides: Mastering markdown](https://guides.github.com/features/mastering-markdown/), atau sumber lain di internet. Semangat!_
-- Jika terdapat penjelasan yang harus menyertakan code snippet, tuliskan dengan sewajarnya. Tidak perlu menuliskan keseluruhan kode project, cukup bagian yang ingin dijelaskan saja.
+### Hasil Evaluasi Sebelum Hyperparameter Tuning
+
+| Metrik     | Kelas 0 | Kelas 1 | Macro Avg | Weighted Avg |
+|------------|---------|---------|-----------|--------------|
+| Precision  | 0.92    | 0.93    | 0.93      | 0.93         |
+| Recall     | 0.94    | 0.91    | 0.92      | 0.93         |
+| F1-score   | 0.93    | 0.92    | 0.92      | 0.92         |
+| Accuracy   | -       | -       | -         | **92.50%**   |
+
+**Confusion Matrix:**
+
+|               | Predicted 0 | Predicted 1 |
+|---------------|-------------|-------------|
+| Actual 0      |     121     |      8      |
+| Actual 1      |     10      |     101     |
+
+---
+
+### Hasil Evaluasi Setelah Hyperparameter Tuning
+
+Tuning dilakukan menggunakan `GridSearchCV` dengan 384 kombinasi parameter dan 5-fold cross-validation. Model terbaik didapatkan dengan parameter:
+
+```python
+{'max_depth': 20, 'max_features': 'sqrt', 'min_samples_leaf': 1, 'min_samples_split': 10, 'n_estimators': 200}
+```
+| Metrik     | Kelas 0 | Kelas 1 | Macro Avg | Weighted Avg |
+|------------|---------|---------|-----------|--------------|
+| Precision  | 0.93    | 0.94    | 0.93      | 0.93         |
+| Recall     | 0.95    | 0.92    | 0.93      | 0.93         |
+| F1-score   | 0.94    | 0.93    | 0.93      | 0.93         |
+| Accuracy   | -       | -       | -         | **93.33%**   |
+
+**Confusion Matrix:**
+
+|               | Predicted 0 | Predicted 1 |
+|---------------|-------------|-------------|
+| Actual 0      |     1212    |      7      |
+| Actual 1      |     9      |     102     |
+
+## Kesimpulan Evaluasi
+
+Model yang telah melalui proses tuning menunjukkan peningkatan akurasi dari **92.50%** menjadi **93.33%**. Selain itu, nilai **f1-score** meningkat untuk kedua kelas, yang menunjukkan bahwa model menjadi lebih seimbang dalam mendeteksi kedua kategori (**membeli** dan **tidak membeli** mobil).
+
+Dengan demikian, **hyperparameter tuning** terbukti efektif dalam meningkatkan performa model **Random Forest** pada kasus klasifikasi daya beli pelanggan ini.
+
 
