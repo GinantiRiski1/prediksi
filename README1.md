@@ -1,63 +1,137 @@
-# Laporan Proyek Machine Learning - Nama Anda
+# Laporan Proyek Machine Learning - Ginanti Riski
 
 ## Domain Proyek
 
-Pada bagian ini, kamu perlu menuliskan latar belakang yang relevan dengan proyek yang diangkat.
+Dalam era digital saat ini, kemampuan untuk memprediksi daya beli konsumen menjadi salah satu aspek penting dalam pengambilan keputusan bisnis, khususnya di sektor otomotif. Salah satu indikator utama dalam memahami perilaku konsumen adalah **daya beli mobil**, yang dapat menggambarkan kondisi ekonomi masyarakat serta preferensi terhadap produk otomotif.
 
-**Rubrik/Kriteria Tambahan (Opsional)**:
-- Jelaskan mengapa dan bagaimana masalah tersebut harus diselesaikan
-- Menyertakan hasil riset terkait atau referensi. Referensi yang diberikan harus berasal dari sumber yang kredibel dan author yang jelas.
+### Mengapa Masalah Ini Harus Diselesaikan?
+Masalah ini perlu diselesaikan karena pemahaman yang tepat mengenai kemampuan beli pelanggan akan membantu perusahaan otomotif dan lembaga keuangan untuk:
+
+1. **Pengambilan Keputusan Bisnis:** Perusahaan otomotif dapat mengarahkan strategi pemasaran berdasarkan segmentasi pelanggan yang lebih akurat.
+2. **Efisiensi Operasional:** Lembaga keuangan dapat menyesuaikan penawaran kredit atau leasing berdasarkan kemungkinan daya beli calon konsumen.
+3. **Peningkatan Customer Targeting:** Kampanye promosi bisa lebih tertarget dan mengurangi pemborosan anggaran pemasaran.
+
+### Bagaimana Masalah Ini Diselesaikan?
+Masalah ini diselesaikan dengan pendekatan *machine learning* berbasis supervisi, khususnya dengan algoritma **Random Forest**, karena kemampuannya dalam menangani data tabular dan menghindari overfitting. 
   
-  Format Referensi: [Judul Referensi](https://scholar.google.com/) 
+Sebagai referensi atas pendekatan prediksi daya beli mobil, berikut adalah salah satu studi relevan:
+
+> [OPTIMASI HYPERPARAMETER MULTILAYER PERCEPTRON UNTUK PREDIKSI DAYA BELI MOBIL](https://e-journal.stmiklombok.ac.id/index.php/misi/article/view/739)  
+> *Muhammad Iqbal, Hendri Mahmud Nawawi, M Rangga Ramadhan Saelan, Muhammad Sony Maulana, Yudhistira, Ali Mustopa*
+
+Penelitian tersebut menyajikan pendekatan optimasi model Multilayer Perceptron (MLP) untuk memprediksi daya beli konsumen berdasarkan dataset publik dari Kaggle. Studi ini menunjukkan bahwa dengan melakukan hypertuning menggunakan algoritma Adam dan RMSprop, akurasi model dapat ditingkatkan secara signifikan hingga mencapai 92%. Temuan ini memperkuat bahwa pemilihan model dan optimasi hyperparameter yang tepat sangat krusial untuk membangun sistem prediksi yang akurat dan efektif. Penelitian ini juga menegaskan bahwa pemodelan daya beli memiliki implikasi strategis terhadap pengelolaan biaya dan perencanaan pemasaran dalam industri otomotif.
 
 ## Business Understanding
 
-Pada bagian ini, kamu perlu menjelaskan proses klarifikasi masalah.
-
-Bagian laporan ini mencakup:
+Dalam dunia otomotif, memahami pola dan potensi daya beli konsumen sangat penting untuk menentukan strategi pemasaran yang efektif. Dengan memanfaatkan data demografis seperti usia, jenis kelamin, dan pendapatan tahunan, perusahaan dapat membangun model prediktif untuk mengidentifikasi siapa saja yang berpotensi membeli mobil. Melalui proyek ini, diterapkan pendekatan machine learning untuk meningkatkan efisiensi dan akurasi pengambilan keputusan dalam proses targeting konsumen.
 
 ### Problem Statements
 
-Menjelaskan pernyataan masalah latar belakang:
-- Pernyataan Masalah 1
-- Pernyataan Masalah 2
-- Pernyataan Masalah n
-
+1. **Bagaimana cara memprediksi daya beli mobil seseorang berdasarkan informasi demografis seperti usia, jenis kelamin, pendapatan tahunan dan riwayat pembelian sebelumnya?**  
+2. **Apakah model Random Forest efektif untuk melakukan klasifikasi daya beli mobil berdasarkan data yang tersedia?**  
+3. **Bagaimana cara meningkatkan performa model Random Forest untuk menghindari overfitting dan menghasilkan prediksi yang optimal?**  
+   
 ### Goals
 
-Menjelaskan tujuan dari pernyataan masalah:
-- Jawaban pernyataan masalah 1
-- Jawaban pernyataan masalah 2
-- Jawaban pernyataan masalah n
+1. **Membangun model prediksi daya beli mobil dengan input utama berupa usia, jenis kelamin, pendapatan tahunan dan riwayat pembelian sebelumnya.**  
+   Model ini bertujuan untuk membantu perusahaan mengidentifikasi calon pembeli potensial secara lebih akurat.
 
-Semua poin di atas harus diuraikan dengan jelas. Anda bebas menuliskan berapa pernyataan masalah dan juga goals yang diinginkan.
+2. **Mengevaluasi performa model Random Forest untuk menguji keefektifannya dalam mengklasifikasikan daya beli mobil konsumen.**  
+   Model Random Forest dikenal tangguh dalam menangani data tabular dan fitur-fitur yang kompleks. Namun, perlu dilakukan evaluasi sejauh mana model ini efektif dalam 
+   mengklasifikasikan konsumen berdasarkan data demografis yang tersedia. Evaluasi dilakukan berdasarkan metrik akurasi, precision, recall, dan f1-score, untuk mengetahui 
+   seberapa efektif model dalam pengambilan keputusan bisnis.
 
-**Rubrik/Kriteria Tambahan (Opsional)**:
-- Menambahkan bagian “Solution Statement” yang menguraikan cara untuk meraih goals. Bagian ini dibuat dengan ketentuan sebagai berikut: 
+3. **Melakukan hyperparameter tuning untuk memaksimalkan performa model Random Forest.**  
+   Salah satu tantangan dalam penerapan machine learning adalah overfitting. Maka, perlu dilakukan tuning terhadap hyperparameter untuk meningkatkan generalisasi model 
+   terhadap data baru. Tuning dilakukan terhadap parameter seperti `n_estimators`, `max_depth`, dan `min_samples_split` untuk menemukan konfigurasi terbaik dalam 
+   meningkatkan performa prediksi.
 
-    ### Solution statements
-    - Mengajukan 2 atau lebih solution statement. Misalnya, menggunakan dua atau lebih algoritma untuk mencapai solusi yang diinginkan atau melakukan improvement pada baseline model dengan hyperparameter tuning.
-    - Solusi yang diberikan harus dapat terukur dengan metrik evaluasi.
+### Solution Statements
+
+1. **Menggunakan algoritma Random Forest sebagai baseline model.**  
+   Model ini dipilih karena keandalannya dalam klasifikasi berbasis data tabular, serta kemampuannya menangani interaksi antar fitur secara otomatis.
+
+2. **Melakukan optimasi model dengan teknik hyperparameter tuning menggunakan GridSearchCV.**  
+   Ini bertujuan untuk menemukan kombinasi parameter terbaik yang menghasilkan performa optimal berdasarkan metrik akurasi dan f1-score.
+
+3. **Mengukur performa model dengan metrik evaluasi yang terukur.**  
+   Penggunaan classification report, confusion matrix, dan cross-validation dilakukan untuk memastikan model bekerja dengan baik dan mampu menggeneralisasi data baru.
+
 
 ## Data Understanding
-Paragraf awal bagian ini menjelaskan informasi mengenai data yang Anda gunakan dalam proyek. Sertakan juga sumber atau tautan untuk mengunduh dataset. Contoh: [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets/Restaurant+%26+consumer+data).
+Dataset yang digunakan dalam proyek ini merupakan dataset publik yang umumnya digunakan untuk prediksi perilaku konsumen terhadap keputusan pembelian mobil. Dataset ini dapat ditemukan di berbagai repositori pembelajaran mesin, salah satunya berasal dari Kaggle. yaitu: [Car Purchase Prediction 🚗](https://www.kaggle.com/code/casper6290/car-purchase-prediction).
 
-Selanjutnya uraikanlah seluruh variabel atau fitur pada data. Sebagai contoh:  
+Dataset ini terdiri dari lima variabel, yaitu:
 
-### Variabel-variabel pada Restaurant UCI dataset adalah sebagai berikut:
-- accepts : merupakan jenis pembayaran yang diterima pada restoran tertentu.
-- cuisine : merupakan jenis masakan yang disajikan pada restoran.
-- dst
+### Variabel-variabel pada dataset:
+- **User ID**: Nomor identifikasi unik pengguna (tidak digunakan dalam pemodelan).
+- **Age**: Usia pelanggan (dalam tahun).
+- **Gender**: Jenis kelamin pelanggan (Male/Female).
+- **AnnualSalary**: Pendapatan tahunan pelanggan (dalam USD).
+- **Purchased**: Label target yang menunjukkan apakah pelanggan membeli mobil (`1`) atau tidak (`0`).
 
-**Rubrik/Kriteria Tambahan (Opsional)**:
-- Melakukan beberapa tahapan yang diperlukan untuk memahami data, contohnya teknik visualisasi data atau exploratory data analysis.
+
+### Exploratory Data Analysis (EDA)
+Untuk memahami struktur dan distribusi data, dilakukan beberapa tahapan eksplorasi data, di antaranya:
+
+- **Distribusi variabel target (`Purchased`)**: Analisis dilakukan untuk melihat keseimbangan data antara kelas yang membeli mobil dan yang tidak.
+- **Distribusi fitur numerik**: Visualisasi dilakukan untuk memeriksa sebaran nilai pada fitur `Age` dan `AnnualSalary`, guna mendeteksi outlier dan pola distribusi.
+- **Korelasi antar variabel numerik**: Korelasi antara `Age`, `AnnualSalary`, dan label `Purchased` dihitung untuk mengetahui hubungan linier antar variabel yang dapat mendukung prediksi.
+
+Hasil EDA menunjukkan bahwa fitur numerik memiliki distribusi yang cukup normal dan tidak terdapat nilai hilang. Oleh karena itu, dataset ini siap digunakan dalam tahap pemodelan supervised learning.
 
 ## Data Preparation
-Pada bagian ini Anda menerapkan dan menyebutkan teknik data preparation yang dilakukan. Teknik yang digunakan pada notebook dan laporan harus berurutan.
 
-**Rubrik/Kriteria Tambahan (Opsional)**: 
-- Menjelaskan proses data preparation yang dilakukan
-- Menjelaskan alasan mengapa diperlukan tahapan data preparation tersebut.
+Tahapan ini mencakup berbagai proses pembersihan dan transformasi data agar siap digunakan dalam proses pelatihan model machine learning. Adapun langkah-langkah data preparation yang dilakukan dalam proyek ini adalah sebagai berikut:
+
+### 1. Cek Jumlah dan Informasi Data
+- **Proses**: Meninjau jumlah baris dan kolom dalam dataset.
+- **Alasan**: Untuk mengetahui struktur data awal, tipe data setiap kolom, dan mendeteksi nilai null.
+
+### 2. Cek Distribusi Data
+- **Proses**: Menampilkan proporsi kelas dari target `Purchased`.
+- **Alasan**: Untuk mengetahui apakah kelas target seimbang atau perlu penanganan lebih lanjut.
+
+### 3. Cek Missing Values
+- **Proses**: Mengecek nilai kosong pada setiap kolom.
+- **Alasan**: Nilai kosong dapat mengganggu pelatihan model, sehingga harus ditangani.
+
+### 4. Cek Duplikasi Data
+- **Proses**: Mendeteksi dan menghapus baris duplikat.
+- **Alasan**: Duplikasi dapat menyebabkan bias dan menurunkan performa model.
+
+### 5. Cek Outliers Data
+- **Proses**: Melihat nilai ekstrem pada fitur numerik seperti `Age` dan `AnnualSalary`.
+- **Alasan**: Outlier dapat mempengaruhi distribusi data dan mengganggu proses pelatihan.
+
+### 6. Label Encoding
+- **Proses**: Mengubah data kategorikal (`Gender`) menjadi numerik.
+- **Alasan**: Algoritma machine learning memerlukan input numerik untuk dapat diproses.
+
+### 7. Delete Variabel Tidak Penting
+- **Proses**: Menghapus kolom `User ID`.
+- **Alasan**: Kolom ini bersifat unik dan tidak memberikan kontribusi terhadap prediksi.
+
+### 8. Cek Korelasi Antar Variabel
+- **Proses**: Menggunakan heatmap korelasi untuk melihat hubungan antar fitur dan target.
+- **Alasan**: Untuk mengevaluasi relevansi fitur terhadap target dan menghindari multikolinearitas.
+
+### 9. Normalisasi Data
+- **Proses**: Melakukan normalisasi pada fitur numerik.
+- **Alasan**: Meski Random Forest tidak memerlukannya, normalisasi disiapkan agar model lain bisa digunakan bila diperlukan.
+
+### 10. Pisahkan Fitur dan Target
+- **Proses**: Memisahkan `X` (fitur) dan `y` (target) sebelum proses pelatihan.
+- **Alasan**: Supaya proses training model bisa dilakukan dengan benar.
+
+### 11. Oversampling Data
+- **Proses**: Menyeimbangkan jumlah kelas target dengan teknik oversampling.
+- **Alasan**: Untuk mencegah model bias terhadap kelas mayoritas.
+
+### 12. Data Splitting
+- **Proses**: Membagi data menjadi data latih dan data uji (80:20).
+- **Alasan**: Untuk mengevaluasi performa model terhadap data yang tidak dilatih.
+
 
 ## Modeling
 Tahapan ini membahas mengenai model machine learning yang digunakan untuk menyelesaikan permasalahan. Anda perlu menjelaskan tahapan dan parameter yang digunakan pada proses pemodelan.
