@@ -1,8 +1,19 @@
-# Laporan Proyek Machine Learning (Sistem Rekomendasi Film Berbasis Konten Menggunakan Genre Film) - Ginanti Riski
+# Laporan Proyek Machine Learning - Ginanti Riski
 
 ## Project Overview
 
-Sistem rekomendasi film merupakan salah satu penerapan machine learning yang paling luas digunakan saat ini, khususnya di industri hiburan seperti Netflix, Disney+, hingga platform streaming lokal. Sistem ini membantu pengguna menemukan film yang relevan berdasarkan preferensi mereka, sehingga dapat meningkatkan pengalaman pengguna dan loyalitas terhadap platform. Proyek ini berfokus pada pengembangan sistem rekomendasi film berbasis konten menggunakan genre film.
+Sistem rekomendasi film adalah aplikasi yang sangat populer digunakan oleh berbagai platform streaming untuk membantu pengguna menemukan film yang relevan berdasarkan preferensi mereka. Dalam proyek ini, kita akan membangun sistem rekomendasi menggunakan teknik content-based filtering. Sistem ini akan memanfaatkan fitur-fitur film seperti **judul** dan **genre** untuk memberikan rekomendasi yang paling relevan bagi pengguna.
+
+Content-based filtering bekerja dengan cara menganalisis konten atau fitur dari item yang telah dilihat atau dipilih sebelumnya oleh pengguna dan mencari item lain yang memiliki kesamaan konten. Dalam hal ini, film yang memiliki genre atau judul yang mirip akan direkomendasikan kepada pengguna.
+
+### Mengapa Proyek Ini Penting?
+
+Seiring berkembangnya jumlah film dan serial di berbagai platform streaming seperti Netflix, Hulu, dan Amazon Prime, banyak pengguna merasa kesulitan untuk menemukan film yang sesuai dengan minat mereka. Sistem rekomendasi berbasis konten seperti ini memungkinkan pengguna untuk lebih mudah menemukan film baru yang mereka sukai tanpa harus mencari satu per satu. Oleh karena itu, membangun sistem rekomendasi yang efektif dan efisien menjadi sangat penting.
+
+### Referensi Terkait
+1. [A survey on recommender systems: Research and applications](https://scholar.google.com/scholar?q=A+survey+on+recommender+systems%3A+Research+and+applications) - Penelitian ini membahas berbagai jenis sistem rekomendasi, termasuk content-based filtering, yang sangat relevan dengan proyek ini.
+2. [Recommender Systems Handbook](https://scholar.google.com/scholar?q=Recommender+Systems+Handbook) - Buku ini memberikan panduan menyeluruh tentang teori dan aplikasi sistem rekomendasi.
+3. [A Survey of Recommender Systems Based on Deep Learning](https://arxiv.org/abs/2009.08544)
 
 ### Pentingnya Proyek
 
@@ -11,25 +22,39 @@ Proyek ini dapat digunakan dalam berbagai skenario nyata seperti:
 - Membantu pengguna menemukan film baru yang relevan
 - Meningkatkan engagement dan waktu tinggal pengguna pada platform
 
-### Referensi:
-- [A Survey of Recommender Systems Based on Deep Learning](https://arxiv.org/abs/2009.08544)
-
+--
 ## Business Understanding
 
 ### Problem Statements
-1. Bagaimana membuat sistem rekomendasi film yang dapat memberikan saran film berdasarkan genre dari film yang sudah ditonton pengguna?
-2. Bagaimana cara meningkatkan relevansi hasil rekomendasi?
+
+Pada bagian ini, kita akan mengklarifikasi masalah yang ingin diselesaikan melalui proyek sistem rekomendasi film.
+
+- **Pernyataan Masalah 1:** Banyak pengguna platform streaming merasa kesulitan dalam mencari film yang sesuai dengan preferensi mereka, karena banyaknya pilihan yang tersedia.
+- **Pernyataan Masalah 2:** Platform streaming tidak memiliki sistem rekomendasi yang memadai untuk menyarankan film berdasarkan genre atau jenis film yang telah ditonton sebelumnya oleh pengguna.
+- **Pernyataan Masalah 3:** Pengguna cenderung melewatkan film berkualitas tinggi karena kurangnya informasi terkait film yang serupa dengan preferensi mereka.
 
 ### Goals
-- Menghasilkan daftar 10 film rekomendasi berdasarkan input judul film.
-- Menyusun sistem rekomendasi berbasis konten yang mudah diimplementasikan dan dievaluasi.
 
-## Solution Approach
+Tujuan dari proyek ini adalah untuk membangun sistem rekomendasi berbasis konten yang dapat memberikan saran film yang relevan kepada pengguna berdasarkan genre dan judul film yang telah mereka tonton.
 
-### Solution Statements:
-1. Menggunakan **TF-IDF Vectorizer** pada fitur genre film untuk mengekstrak bobot representasi teks.
-2. Menghitung **Cosine Similarity** antar film berdasarkan bobot genre.
-3. Menyusun rekomendasi berdasarkan nilai kemiripan tertinggi terhadap film input (top-N recommendation).
+- **Jawaban Pernyataan Masalah 1:** Membuat sistem rekomendasi yang memungkinkan pengguna menemukan film yang relevan dengan lebih mudah, berdasarkan genre yang diminati.
+- **Jawaban Pernyataan Masalah 2:** Membangun algoritma content-based filtering yang dapat memberikan rekomendasi berdasarkan kesamaan konten antara film yang telah ditonton dengan film lainnya.
+- **Jawaban Pernyataan Masalah 3:** Menyajikan rekomendasi film yang dapat menarik minat pengguna dengan memperkenalkan mereka pada film-film berkualitas yang serupa dengan yang telah mereka tonton sebelumnya.
+
+### Solution Approach
+
+Untuk mencapai tujuan yang telah ditetapkan, berikut adalah dua pendekatan solusi yang akan digunakan dalam proyek ini:
+
+- **Pendekatan 1: Content-Based Filtering**
+  - Sistem ini akan menganalisis fitur-fitur dari film, seperti judul dan genre, untuk merekomendasikan film serupa kepada pengguna. Setiap film akan diproses berdasarkan kesamaan genre dengan film yang telah dipilih atau ditonton sebelumnya.
+  - Dalam pendekatan ini, kita akan menggunakan teknik **TF-IDF (Term Frequency-Inverse Document Frequency)** untuk mengukur kesamaan antara film berdasarkan genre dan menggunakan **cosine similarity** untuk menghitung seberapa mirip film satu dengan yang lainnya.
+  
+- **Pendekatan 2: Collaborative Filtering**
+  - Meskipun fokus utama adalah pada content-based filtering, pendekatan **Collaborative Filtering** bisa diterapkan sebagai solusi tambahan untuk meningkatkan kualitas rekomendasi, di mana sistem akan memanfaatkan data rating atau ulasan pengguna untuk menemukan film serupa yang disukai oleh pengguna lain dengan preferensi yang mirip.
+  - Pendekatan ini dapat dikombinasikan dengan algoritma lain seperti **Matrix Factorization** untuk mendalami lebih jauh dalam membuat rekomendasi yang lebih personalized.
+
+--
+
 
 ## Data Understanding
 
