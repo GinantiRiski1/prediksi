@@ -59,79 +59,84 @@ Dalam dunia otomotif, memahami pola dan potensi daya beli konsumen sangat pentin
 
 
 ## Data Understanding
-Dataset yang digunakan dalam proyek ini merupakan dataset publik yang umumnya digunakan untuk prediksi perilaku konsumen terhadap keputusan pembelian mobil. Dataset ini dapat ditemukan di berbagai repositori pembelajaran mesin, salah satunya berasal dari Kaggle. yaitu: [Car Purchase Prediction 🚗](https://www.kaggle.com/code/casper6290/car-purchase-prediction).
 
-Dataset ini terdiri dari lima variabel, yaitu:
+Dataset yang digunakan dalam proyek ini merupakan dataset publik yang sering digunakan untuk prediksi perilaku konsumen dalam keputusan pembelian mobil. Dataset ini dapat ditemukan di berbagai repositori pembelajaran mesin, salah satunya berasal dari Kaggle, yaitu:  
+🔗 [Car Purchase Prediction 🚗](https://www.kaggle.com/code/casper6290/car-purchase-prediction)
 
-### Variabel-variabel pada dataset:
-- **User ID**: Nomor identifikasi unik pengguna (tidak digunakan dalam pemodelan).
-- **Age**: Usia pelanggan (dalam tahun).
-- **Gender**: Jenis kelamin pelanggan (Male/Female).
-- **AnnualSalary**: Pendapatan tahunan pelanggan (dalam USD).
-- **Purchased**: Label target yang menunjukkan apakah pelanggan membeli mobil (`1`) atau tidak (`0`).
+Dataset ini terdiri dari lima variabel, dengan total **1000 data**. Adapun jenis variabel dalam dataset ini adalah sebagai berikut:
 
+### Variabel-variabel pada Dataset
 
-### Exploratory Data Analysis (EDA)
-Untuk memahami struktur dan distribusi data, dilakukan beberapa tahapan eksplorasi data, di antaranya:
+| Nama Fitur     | Deskripsi                                                                                |
+|----------------|-------------------------------------------------------------------------------------------|
+| `User ID`      | Nomor identifikasi unik pengguna (tidak digunakan dalam pemodelan).                        |
+| `Age`          | Usia pelanggan (dalam tahun). Bertipe numerik.                                             |
+| `Gender`       | Jenis kelamin pelanggan (`Male`/`Female`). Bertipe kategorikal.                            |
+| `AnnualSalary` | Pendapatan tahunan pelanggan (dalam USD). Bertipe numerik.                                 |
+| `Purchased`    | Label target, menunjukkan apakah pelanggan membeli mobil (`1`) atau tidak (`0`).           |
 
-- **Distribusi variabel target (`Purchased`)**: Analisis dilakukan untuk melihat keseimbangan data antara kelas yang membeli mobil dan yang tidak.
-- **Distribusi fitur numerik**: Visualisasi dilakukan untuk memeriksa sebaran nilai pada fitur `Age` dan `AnnualSalary`, guna mendeteksi outlier dan pola distribusi.
-- **Korelasi antar variabel numerik**: Korelasi antara `Age`, `AnnualSalary`, dan label `Purchased` dihitung untuk mengetahui hubungan linier antar variabel yang dapat mendukung prediksi.
+---
 
-Hasil EDA menunjukkan bahwa fitur numerik memiliki distribusi yang cukup normal dan tidak terdapat nilai hilang. Oleh karena itu, dataset ini siap digunakan dalam tahap pemodelan supervised learning.
+## Exploratory Data Analysis (EDA)
+
+Untuk memahami struktur dan karakteristik data, dilakukan beberapa tahapan eksplorasi awal berikut:
+
+- **Informasi Dataset**  
+  Mengecek jumlah baris, kolom, tipe data setiap fitur, dan memeriksa adanya nilai kosong.
+
+- **Distribusi Variabel Target (`Purchased`)**  
+  Analisis proporsi kelas pelanggan yang membeli mobil dan yang tidak. Hasil menunjukkan distribusi kelas yang relatif seimbang.
+
+- **Pengecekan Duplikasi Data**  
+  Tidak ditemukan data duplikat pada dataset.
+
+- **Distribusi Fitur Numerik (`Age` dan `AnnualSalary`)**  
+  Visualisasi menggunakan boxplot dan histogram untuk mendeteksi adanya outlier serta melihat pola sebaran nilai. Hasil menunjukkan sebaran data yang cukup wajar dan tidak terdapat outlier ekstrem.
+
+---
+
+### Ringkasan Hasil EDA
+
+- Tidak terdapat nilai kosong (missing values).
+- Tidak terdapat duplikasi data.
+- Sebaran fitur numerik (`Age` dan `AnnualSalary`) relatif normal.
+- Data siap untuk tahap preprocessing lebih lanjut seperti encoding, normalisasi, dan pembagian data.
+
+---
 
 ## Data Preparation
 
-Tahapan ini mencakup berbagai proses pembersihan dan transformasi data agar siap digunakan dalam proses pelatihan model machine learning. Adapun langkah-langkah data preparation yang dilakukan dalam proyek ini adalah sebagai berikut:
+Tahap ini mencakup berbagai proses pembersihan, transformasi, dan persiapan data agar siap digunakan dalam pelatihan model machine learning. Adapun langkah-langkah data preparation yang dilakukan dalam proyek ini adalah sebagai berikut:
 
-### 1. Cek Jumlah dan Informasi Data
-- **Proses**: Meninjau jumlah baris dan kolom dalam dataset.
-- **Alasan**: Untuk mengetahui struktur data awal, tipe data setiap kolom, dan mendeteksi nilai null.
+### 1. Label Encoding
+- **Proses**: Mengubah data kategorikal pada kolom `Gender` menjadi representasi numerik menggunakan teknik label encoding.
+- **Alasan**: Algoritma machine learning memerlukan input dalam format numerik untuk dapat diproses secara optimal.
 
-### 2. Cek Distribusi Data
-- **Proses**: Menampilkan proporsi kelas dari target `Purchased`.
-- **Alasan**: Untuk mengetahui apakah kelas target seimbang atau perlu penanganan lebih lanjut.
+### 2. Cek Korelasi Antar Variabel
+- **Proses**: Menghitung korelasi antar fitur numerik dan label target `Purchased`, serta divisualisasikan menggunakan heatmap.
+- **Alasan**: Untuk memahami hubungan antar variabel, memilih fitur yang relevan, dan mendeteksi kemungkinan multikolinearitas.
 
-### 3. Cek Missing Values
-- **Proses**: Mengecek nilai kosong pada setiap kolom.
-- **Alasan**: Nilai kosong dapat mengganggu pelatihan model, sehingga harus ditangani.
+### 3. Penghapusan Variabel Tidak Penting
+- **Proses**: Menghapus kolom `User ID` dari dataset.
+- **Alasan**: Kolom ini bersifat unik untuk masing-masing data, sehingga tidak berkontribusi terhadap proses prediksi dan dapat dihapus untuk mengurangi kompleksitas data.
 
-### 4. Cek Duplikasi Data
-- **Proses**: Mendeteksi dan menghapus baris duplikat.
-- **Alasan**: Duplikasi dapat menyebabkan bias dan menurunkan performa model.
+### 4. Normalisasi Data
+- **Proses**: Melakukan normalisasi pada fitur numerik seperti `Age` dan `AnnualSalary` menggunakan metode standardisasi (mean = 0, standar deviasi = 1).
+- **Alasan**: Walaupun Random Forest tidak membutuhkan normalisasi, tahap ini disiapkan untuk fleksibilitas penggunaan algoritma lain di masa depan.
 
-### 5. Cek Outliers Data
-- **Proses**: Melihat nilai ekstrem pada fitur numerik seperti `Age` dan `AnnualSalary`.
-- **Alasan**: Outlier dapat mempengaruhi distribusi data dan mengganggu proses pelatihan.
+### 5. Pemisahan Fitur dan Target
+- **Proses**: Memisahkan dataset menjadi fitur (`X`) dan target (`y`).
+- **Alasan**: Agar fitur input dan label output dapat diproses secara terpisah dalam tahap pelatihan model.
 
-### 6. Label Encoding
-- **Proses**: Mengubah data kategorikal (`Gender`) menjadi numerik.
-- **Alasan**: Algoritma machine learning memerlukan input numerik untuk dapat diproses.
+### 6. Oversampling dengan SMOTE
+- **Proses**: Menyeimbangkan jumlah data pada masing-masing kelas target menggunakan metode Synthetic Minority Oversampling Technique (SMOTE).
+- **Alasan**: Untuk mengatasi ketidakseimbangan kelas yang dapat menyebabkan bias model terhadap kelas mayoritas.
 
-### 7. Delete Variabel Tidak Penting
-- **Proses**: Menghapus kolom `User ID`.
-- **Alasan**: Kolom ini bersifat unik dan tidak memberikan kontribusi terhadap prediksi.
+### 7. Data Splitting
+- **Proses**: Membagi data menjadi data latih (training set) dan data uji (testing set) dengan rasio 80:20.
+- **Alasan**: Untuk mengukur performa model pada data yang tidak pernah dilihat sebelumnya, sehingga dapat menguji kemampuan generalisasi model.
 
-### 8. Cek Korelasi Antar Variabel
-- **Proses**: Menggunakan heatmap korelasi untuk melihat hubungan antar fitur dan target.
-- **Alasan**: Untuk mengevaluasi relevansi fitur terhadap target dan menghindari multikolinearitas.
-
-### 9. Normalisasi Data
-- **Proses**: Melakukan normalisasi pada fitur numerik.
-- **Alasan**: Meski Random Forest tidak memerlukannya, normalisasi disiapkan agar model lain bisa digunakan bila diperlukan.
-
-### 10. Pisahkan Fitur dan Target
-- **Proses**: Memisahkan `X` (fitur) dan `y` (target) sebelum proses pelatihan.
-- **Alasan**: Supaya proses training model bisa dilakukan dengan benar.
-
-### 11. Oversampling Data
-- **Proses**: Menyeimbangkan jumlah kelas target dengan teknik oversampling.
-- **Alasan**: Untuk mencegah model bias terhadap kelas mayoritas.
-
-### 12. Data Splitting
-- **Proses**: Membagi data menjadi data latih dan data uji (80:20).
-- **Alasan**: Untuk mengevaluasi performa model terhadap data yang tidak dilatih.
-
+---
 
 ## Modeling
 
