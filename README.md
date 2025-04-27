@@ -228,16 +228,14 @@ Dimana:
 
 2. **Root Mean Squared Error (RMSE)** (Collaborative Filtering)
    RMSE mengukur akar kuadrat dari rata-rata kuadrat kesalahan antara nilai yang diprediksi dan nilai yang sebenarnya. Formula untuk RMSE adalah:
-
-   \[
-   RMSE = \sqrt{\frac{1}{N} \sum_{i=1}^{N} (\hat{r}_i - r_i)^2}
-   \]
+ ![hasil evaluasi con_fil](https://github.com/GinantiRiski1/prediksi/blob/main/pic5.png)
 
    RMSE lebih sensitif terhadap outlier dan memberikan gambaran tentang kesalahan prediksi model. Semakin rendah nilai RMSE, semakin baik kualitas model dalam memberikan rekomendasi yang sesuai dengan preferensi pengguna.
 
    Dalam proyek ini, **Collaborative Filtering** memberikan hasil sebagai berikut:
-   - **RMSE Training:** 0.1585
-   - **RMSE Validation:** 0.1780
+   ![hasil evaluasi col_fil](https://github.com/GinantiRiski1/prediksi/blob/main/pic3.png)
+   - **RMSE Training:** 0.1591
+   - **RMSE Validation:** 0.1783
 
    RMSE Training menunjukkan bahwa rata-rata kesalahan prediksi model terhadap data training cukup kecil, sementara RMSE Validation menunjukkan bahwa model dapat generalisasi dengan baik pada data yang belum terlihat sebelumnya. Nilai RMSE yang mendekati antara training dan validation menunjukkan bahwa model tidak mengalami overfitting dan dapat memberikan prediksi yang akurat.
 
@@ -247,7 +245,7 @@ Dimana:
   - **Precision@10 = 100%** menunjukkan bahwa sistem rekomendasi berbasis konten memberikan rekomendasi yang sangat relevan kepada pengguna.
 
 - **Collaborative Filtering:**
-  - **RMSE Training (0.1585)** dan **RMSE Validation (0.1780)** menunjukkan bahwa model Collaborative Filtering dapat memprediksi rating dengan sangat akurat, dan kesalahan prediksi antara data training dan validation cukup kecil, mengindikasikan kemampuan generalisasi model yang baik.
+  - **RMSE Training (0.1591)** dan **RMSE Validation (0.1783)** menunjukkan bahwa model Collaborative Filtering dapat memprediksi rating dengan sangat akurat, dan kesalahan prediksi antara data training dan validation cukup kecil, mengindikasikan kemampuan generalisasi model yang baik.
 
 ### Kesimpulan
 
