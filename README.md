@@ -254,25 +254,3 @@ Dimana:
 - **Collaborative Filtering**: Dengan RMSE yang rendah untuk data training dan validation, sistem rekomendasi berbasis Collaborative Filtering dapat memberikan prediksi yang sangat akurat untuk pengguna berdasarkan interaksi dan preferensi pengguna lain. Pendekatan ini lebih personal dan efektif untuk pengguna dengan riwayat interaksi yang cukup banyak.
 
 Kedua pendekatan menunjukkan hasil yang baik, dan dapat dikombinasikan untuk menghasilkan sistem rekomendasi yang lebih robust dan personalized bagi pengguna.
-
-## Evaluation
-
-Metrik evaluasi yang digunakan adalah **Precision**, dihitung sebagai:
-Precision = TP / (TP + FP)
-
-Dimana:
-- **TP (True Positives)**: jumlah film yang direkomendasikan dan benar-benar relevan
-- **FP (False Positives)**: jumlah film yang direkomendasikan tapi tidak relevan
-
-### Hasil Evaluasi:
-- **TP** = 19
-- **FP** = 0
-- **Precision** = 19 / (19 + 0) = **1.0 atau 100%**
-
-Metrik ini sesuai digunakan dalam sistem rekomendasi untuk mengevaluasi relevansi hasil rekomendasi. Evaluasi dilakukan secara manual terhadap output sistem dengan membandingkan genre hasil rekomendasi terhadap film input.
-
----
-
-## Kesimpulan
-
-Sistem rekomendasi berbasis konten ini berhasil memberikan rekomendasi yang sangat relevan berdasarkan genre film. Dengan pendekatan TF-IDF Vectorizer dan Cosine Similarity, sistem ini dapat mengidentifikasi film dengan genre yang serupa dengan akurasi yang tinggi. Evaluasi menggunakan Precision menunjukkan hasil yang sangat baik dengan skor 100%.
