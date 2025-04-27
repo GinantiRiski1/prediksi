@@ -87,12 +87,14 @@ Variabel yang tersedia dalam dataset ini antara lain:
 
 Beberapa langkah eksplorasi data yang dilakukan dalam proyek ini adalah:
 
-1. **Distribusi Rating Film**  
+1. **Distribusi Rating Film**
+   ![Distribusi Rating Film](https://github.com/GinantiRiski1/prediksi/blob/main/pic1.png)
    Visualisasi ini bertujuan untuk melihat sebaran nilai rating yang diberikan pengguna terhadap film.  
    - Hasil observasi menunjukkan bahwa sebagian besar film mendapatkan rating di kisaran 3.0 hingga 4.5.
    - Ini mengindikasikan bahwa pengguna cenderung memberikan penilaian positif terhadap film yang mereka tonton.
 
-2. **Rata-rata Rating per Genre**  
+3. **Rata-rata Rating per Genre**
+   ![Rata-rata Rating per Genre](https://github.com/GinantiRiski1/prediksi/blob/main/pic2.png)
    Untuk memahami preferensi berdasarkan genre, dilakukan analisis rata-rata rating per genre film.  
    - Genre dengan rata-rata rating tertinggi menunjukkan bahwa film dengan genre tersebut cenderung lebih disukai pengguna.
    - Dari visualisasi, dapat dilihat bahwa genre seperti **Documentary** dan **Film-Noir** mendapatkan rata-rata rating yang lebih tinggi dibanding genre lainnya.
