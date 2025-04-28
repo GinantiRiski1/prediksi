@@ -19,9 +19,17 @@ Membangun sistem rekomendasi yang efektif, dengan kombinasi teknik content-based
 
 ### Referensi Terkait
 
-1. [A Survey on Recommender Systems: Research and Applications](https://scholar.google.com/scholar?q=A+survey+on+recommender+systems%3A+Research+and+applications) — Penelitian ini membahas berbagai pendekatan sistem rekomendasi, termasuk metode content-based dan collaborative filtering.
-2. [Recommender Systems Handbook](https://scholar.google.com/scholar?q=Recommender+Systems+Handbook) — Buku komprehensif yang menjadi rujukan utama dalam pengembangan dan evaluasi sistem rekomendasi.
-3. [A Survey of Recommender Systems Based on Deep Learning](https://arxiv.org/abs/2009.08544) — Studi ini mengulas pendekatan modern dalam sistem rekomendasi berbasis deep learning, termasuk model-model mutakhir untuk collaborative filtering.
+1. **Movie Recommendation System: A Comparison of Content-Based and Collaborative Filtering**  
+   [Link ke jurnal](https://www.sciencedirect.com/science/article/pii/S1877050924031211)  
+   **Penulis:** Hans Hendersen Kurniawan, William Susanto Lukman, Renaldy Fredyan, Muhammad Amien Ibrahim  
+   **Hasil Penelitian:**  
+   Penelitian ini membandingkan efektivitas content-based filtering dan collaborative filtering dalam membangun sistem rekomendasi film. Mereka menemukan bahwa **content-based filtering** lebih unggul untuk pengguna baru (cold-start problem), sementara **collaborative filtering** lebih efektif dalam menghasilkan rekomendasi personal yang lebih akurat untuk pengguna aktif. Kombinasi kedua metode tersebut memberikan performa yang lebih stabil dan fleksibel.
+
+2. **Content Based Filtering and Collaborative Filtering: A Comparative Study**  
+   [Link ke jurnal](https://www.researchgate.net/publication/378841543_Content_Based_Filtering_And_Collaborative_Filtering_A_Comparative_Study)  
+   **Penulis:** Ms. Tejashri Sharad Phalle, Prof. Shivendu Bhushan  
+   **Hasil Penelitian:**  
+   Studi ini mengkaji kelebihan dan kekurangan masing-masing metode. **Content-based filtering** dinilai lebih cepat dan independen terhadap data pengguna lain, tetapi rentan terhadap "serendipity problem" (terlalu fokus pada kesamaan). Sementara **collaborative filtering** unggul dalam menawarkan rekomendasi yang lebih bervariasi namun membutuhkan data interaksi pengguna yang besar. Penelitian ini juga menyoroti pentingnya penggunaan model berbasis deep learning untuk meningkatkan akurasi collaborative filtering.
 
 ### Pentingnya Proyek
 
