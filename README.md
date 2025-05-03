@@ -76,33 +76,88 @@ Dengan kombinasi kedua pendekatan ini, diharapkan sistem rekomendasi dapat membe
 ---
 ## Data Understanding
 
-Dalam proyek ini, data yang digunakan berasal dari [MovieLens Dataset](https://grouplens.org/datasets/movielens/), sebuah dataset yang dikembangkan oleh GroupLens Research. MovieLens merupakan salah satu dataset benchmark yang banyak digunakan dalam penelitian sistem rekomendasi. Dataset ini berisi rating yang diberikan pengguna terhadap berbagai film, lengkap dengan metadata film seperti judul dan genre.
+Dalam proyek ini, data yang digunakan berasal dari [MovieLens Dataset](https://grouplens.org/datasets/movielens/), sebuah dataset yang dikembangkan oleh GroupLens Research. MovieLens merupakan salah satu dataset benchmark yang banyak digunakan dalam penelitian sistem rekomendasi. Dataset ini berisi rating yang diberikan pengguna terhadap berbagai film, lengkap dengan metadata film seperti judul dan genre. Data yang digunakan dalam proyek ini berasal dari empat file CSV yaitu `movies.csv`, `links.csv`, `ratings.csv`, dan `tags.csv`. 
 
-Dataset yang digunakan terdiri dari sekitar **100.000 rating** yang diberikan oleh lebih dari **600 pengguna** terhadap hampir **10.000 film**. Data ini sangat cocok untuk membangun dan menguji sistem rekomendasi baik berbasis konten maupun kolaboratif.
+Masing-masing file memiliki informasi yang berbeda, yaitu:
+     - `movies.csv`: Berisi informasi mengenai film seperti `movieId`, `title`, dan `genres`.
+     - `links.csv`: Menyediakan ID dari film yang terhubung dengan sumber eksternal (misalnya, IMDB).
+     - `ratings.csv`: Berisi data rating yang diberikan oleh pengguna terhadap film.
+     - `tags.csv`: Menyediakan tag atau label yang diberikan oleh pengguna pada film.
 
-### Variabel-Variabel dalam Dataset
 
-Variabel yang tersedia dalam dataset ini antara lain:
+## Informasi Umum Dataset
+- **Jumlah data**:
+  - **46573 baris (entri rating)**
+  - **9 kolom (fitur)**
+- **Ukuran memori**: ~3.2 MB
 
-- **userId** : ID unik yang merepresentasikan masing-masing pengguna.
-- **movieId** : ID unik yang merepresentasikan masing-masing film.
-- **rating** : Nilai rating yang diberikan pengguna terhadap film (berkisar dari 0.5 hingga 5.0).
-- **timestamp** : Waktu saat pengguna memberikan rating terhadap film (dalam format UNIX timestamp).
-- **title** : Judul dari film yang dirating.
-- **genre** : Genre film, dapat berupa kombinasi beberapa genre yang dipisahkan oleh tanda '|'.
+
+## Kondisi Data
+
+### Missing Values
+| Kolom     | Nilai Non-Null | Nilai Kosong |
+|-----------|----------------|---------------|
+| title     | 44352          | 2221          |
+| genres    | 44352          | 2221          |
+| imdbId    | 44352          | 2221          |
+| tmdbId    | 44351          | 2222          |
+| tag       | 39936          | 6637          |
+
+> Sebagian besar nilai kosong berada di kolom metadata film (`title`, `genres`, `imdbId`, `tmdbId`) dan `tag`, namun kita tidak akan menggunakan variabel `imdbid`, `tag` dan `tmdbid` nantinya.
+
+### Duplikasi
+- Terdapat **8946 baris data duplikat** pada keseluruhan data dalam dataset.
+
+## Penjelasan Fitur
+
+| Fitur        | Deskripsi |
+|--------------|-----------|
+| **userId**   | ID unik pengguna. |
+| **movieId**  | ID unik film. |
+| **rating**   | Rating dari pengguna terhadap film (0.5 - 5.0). |
+| **timestamp**| Waktu rating diberikan (UNIX time). |
+| **title**    | Judul film. |
+| **genres**   | Genre film. |
+| **imdbId**   | ID film versi IMDb. |
+| **tmdbId**   | ID film versi TMDb. |
+| **tag**      | Tag/kata kunci dari pengguna (opsional). |
+
+
+## Statistik Deskriptif
+
+| Fitur     | Min    | Q1     | Median | Q3     | Max      |
+|-----------|--------|--------|--------|--------|----------|
+| userId    | 1      | 21     | 33     | 49     | 66       |
+| movieId   | 1      | 480    | 1274   | 4020   | 291485   |
+| rating    | 0.5    | 3.0    | 4.0    | 5.0    | 5.0      |
+| timestamp | 8.3e+08| 9.9e+08| 1.1e+09| 1.4e+09| 1.7e+09  |
+| imdbId    | 9018   | 102926 | 111161 | 137523 | 436727   |
+| tmdbId    | 5      | 238    | 510    | 854    | 503475   |
+
+
+## Analisis Outlier
+
+- **Rating**: Tidak ditemukan outlier karena seluruh nilai berada dalam rentang sistem rating resmi.
+- **movieId** dan **tmdbId** memiliki nilai maksimum jauh di atas Q3. Perlu investigasi apakah ID tersebut sah atau noise.
+- **timestamp** memiliki rentang waktu yang besar tetapi masih masuk akal.
+- **userId** normal dan tidak menunjukkan penyimpangan.
+
+> Catatan: Perlu dilakukan pembersihan data lebih lanjut terutama pada baris duplikat dan kolom dengan banyak nilai kosong, namun hanya berdasarkan fitur yang akan kita gunakan saja, yaitu (`userId`, `movieId`,`rating`,`title`,`genres` dan `timestamp`.
 
 ### Exploratory Data Analysis (EDA)
 
 Beberapa langkah eksplorasi data yang dilakukan dalam proyek ini adalah:
 
 1. **Distribusi Rating Film**
-   ![Distribusi Rating Film](https://github.com/GinantiRiski1/prediksi/blob/main/pic1.png)
+   
+   ![Distirbusi Rating Film](https://github.com/user-attachments/assets/98de04b2-a342-4d72-a0db-7c8acebd62db)
    Visualisasi ini bertujuan untuk melihat sebaran nilai rating yang diberikan pengguna terhadap film.  
    - Hasil observasi menunjukkan bahwa sebagian besar film mendapatkan rating di kisaran 3.0 hingga 4.5.
    - Ini mengindikasikan bahwa pengguna cenderung memberikan penilaian positif terhadap film yang mereka tonton.
 
 3. **Rata-rata Rating per Genre**
-   ![Rata-rata Rating per Genre](https://github.com/GinantiRiski1/prediksi/blob/main/pic2.png)
+   ![Rata-rata Rating per Genre](https://github.com/user-attachments/assets/2f92cf00-1632-4492-83de-bcbc5ea6ad0c)
+
    Untuk memahami preferensi berdasarkan genre, dilakukan analisis rata-rata rating per genre film.  
    - Genre dengan rata-rata rating tertinggi menunjukkan bahwa film dengan genre tersebut cenderung lebih disukai pengguna.
    - Dari visualisasi, dapat dilihat bahwa genre seperti **Documentary** dan **Film-Noir** mendapatkan rata-rata rating yang lebih tinggi dibanding genre lainnya.
@@ -114,61 +169,175 @@ Beberapa langkah eksplorasi data yang dilakukan dalam proyek ini adalah:
 ---
 ## Data Preparation
 
-Pada bagian ini, kita akan menjelaskan tahapan-tahapan **data preparation** yang dilakukan untuk mempersiapkan data sebelum membangun sistem rekomendasi. Proses ini meliputi pemahaman terhadap data, pembersihan, transformasi data, dan persiapan variabel yang diperlukan untuk model content-based filtering dan collaborative filtering.
+Pada bagian ini dilakukan proses **data preparation** secara menyeluruh untuk mempersiapkan data MovieLens sebelum membangun sistem rekomendasi. Tahapan ini meliputi: eksplorasi awal, penggabungan data, pembersihan data, transformasi fitur, encoding, normalisasi, serta pemisahan data. Proses ini dilakukan untuk memastikan kualitas data yang digunakan serta menyiapkan format data yang sesuai dengan pendekatan **Content-Based Filtering** dan **Collaborative Filtering (menggunakan RecommenderNet)**.
 
-### Tahapan Data Preparation
+## Tahapan Data Preparation :
 
-1. **Data Understanding**
-   - Data yang digunakan dalam proyek ini berasal dari empat file CSV yaitu `movies.csv`, `links.csv`, `ratings.csv`, dan `tags.csv`. Masing-masing file memiliki informasi yang berbeda, yaitu:
-     - `movies.csv`: Berisi informasi mengenai film seperti `movieId`, `title`, dan `genres`.
-     - `links.csv`: Menyediakan ID dari film yang terhubung dengan sumber eksternal (misalnya, IMDB).
-     - `ratings.csv`: Berisi data rating yang diberikan oleh pengguna terhadap film.
-     - `tags.csv`: Menyediakan tag atau label yang diberikan oleh pengguna pada film.
-   - Sebelum melangkah lebih jauh, dilakukan **exploratory data analysis (EDA)** untuk memeriksa distribusi data dan variabel yang ada.
+### 1. Pembatasan Jumlah Data dan Eksplorasi Awal
 
-2. **Univariate EDA**
-   - Analisis dilakukan untuk memeriksa distribusi rating film. Ini penting untuk memahami pola pemberian rating pengguna. Visualisasi distribusi rating dilakukan menggunakan histogram dan KDE untuk menunjukkan sebaran rating yang diberikan oleh pengguna.
-   - Selain itu, rata-rata rating per genre juga dihitung dan divisualisasikan untuk mengidentifikasi genre dengan rating tertinggi secara keseluruhan.
+Karena ukuran data asli cukup besar dan untuk menjaga efisiensi komputasi selama proses eksplorasi dan pelatihan model, maka setiap file dibatasi hingga 10.000 baris data teratas. dan eksplorasi awal kita lakukan dengan melihat struktur data disetiap dataset.
 
-3. **Data Processing**
-   - **Pembersihan Data:** Beberapa baris yang memiliki data duplikat atau nilai yang tidak valid dibuang untuk memastikan data yang digunakan akurat.
-   - **Transformasi Data:** Data yang berisi kolom `genres` diproses agar menjadi format yang dapat digunakan dalam model, dengan membagi genre menjadi daftar dan melakukan eksplosi data berdasarkan genre.
-
-4. **Feature Engineering**
-   - Fitur-fitur yang relevan untuk model rekomendasi dipilih dan diproses. Beberapa variabel yang penting adalah:
-     - `movieId`: Identifikasi unik film.
-     - `title`: Judul film.
-     - `genres`: Genre film, yang diubah menjadi format daftar.
-     - `rating`: Rating yang diberikan oleh pengguna terhadap film.
-
-5. **Data Splitting**
-   - Dataset dibagi menjadi data pelatihan dan data pengujian untuk memastikan model dapat diuji dengan baik pada data yang belum pernah dilihat sebelumnya.
-
-6. **Persiapan untuk Content-Based Filtering**
-   - Untuk membangun sistem rekomendasi berbasis konten, teknik **TF-IDF (Term Frequency-Inverse Document Frequency)** digunakan untuk mengukur pentingnya setiap kata dalam judul dan genre film. Ini membantu dalam membandingkan kesamaan konten antar film.
-   - **Cosine similarity** digunakan untuk menghitung seberapa mirip film satu dengan yang lainnya berdasarkan TF-IDF score yang dihasilkan.
-
-7. **Persiapan untuk Collaborative Filtering**
-   - Dataset rating pengguna dipersiapkan untuk membangun model **Collaborative Filtering** menggunakan teknik **Matrix Factorization**. Data rating akan digunakan untuk menghitung kesamaan pengguna atau film berdasarkan interaksi yang ada.
-
-### Mengapa Data Preparation Diperlukan?
-
-Proses data preparation sangat penting untuk memastikan kualitas data yang digunakan dalam pembangunan model rekomendasi. Berikut adalah alasan mengapa setiap langkah penting:
-
-- **Data Understanding** membantu untuk memahami konteks dan jenis data yang tersedia. Hal ini sangat penting sebelum melakukan analisis lebih lanjut.
-- **Univariate EDA** memberikan wawasan tentang distribusi rating dan genre, yang akan membantu dalam memilih metode dan model yang tepat.
-- **Data Processing** membersihkan data dari masalah-masalah seperti duplikasi atau nilai yang hilang, sehingga model yang dibangun tidak dipengaruhi oleh data yang tidak valid.
-- **Feature Engineering** mengubah data mentah menjadi format yang dapat digunakan oleh algoritma machine learning dan memperkenalkan fitur-fitur baru yang relevan untuk prediksi.
-- **Data Splitting** memastikan bahwa model diuji dengan data yang belum dilihat sebelumnya, yang sangat penting untuk menghindari overfitting dan mengukur performa model dengan baik.
-- **Persiapan untuk Content-Based Filtering** memastikan bahwa fitur yang relevan untuk rekomendasi berdasarkan konten dapat digunakan dengan efisien, sehingga model dapat merekomendasikan film yang serupa.
-- **Persiapan untuk Collaborative Filtering** memastikan bahwa interaksi pengguna dan film dapat digunakan untuk membangun model yang memahami preferensi pengguna secara lebih mendalam.
-
-Dengan langkah-langkah tersebut, data siap digunakan untuk membangun sistem rekomendasi yang efektif dan akurat.
+**Mengapa penting?**  
+Pembatasan jumlah data dilakukan untuk menghindari beban komputasi yang terlalu tinggi dan mempercepat proses analisis awal serta pengembangan model. Hal ini juga memudahkan pemahaman terhadap struktur data dan mempercepat iterasi saat eksplorasi serta preprocessing. eksplorasi awal dilakukan untuk mengetahui informasi dataset dan fitur yang ada didalamnya.
 
 ---
+### 2. Penggabungan Data (Merge)
+
+Beberapa file yang berbeda digunakan untuk membentuk satu dataset utama:
+
+- Penggabungan seluruh movieId
+Data movieId dari movies, links, ratings, dan tags digabungkan menjadi satu, diurutkan, dan duplikasi data dihapus agar didapatkan seluruh ID film yang unik.
+
+- Penggabungan seluruh userId
+Begitu juga userId dari ratings dan tags digabung, duplikasi data dihapus agar didapatkan seluruh ID film yang unik, lalu data diurutkan secara ascending.
+
+- Penggabungan Data Film
+Dataset movies digabungkan dengan links dan tags berdasarkan movieId untuk menambahkan metadata film dan tag pengguna.
+
+- Penggabungan dengan Ratings
+Selanjutnya, ratings digabung dengan hasil penggabungan data film sehingga terbentuk satu dataset yang lengkap mencakup informasi user, movie, rating, tag, genre, dan identifier eksternal.
+
+- Pembersihan Kolom Duplikat
+Setelah merge, kolom duplikat seperti userId_y dan timestamp_y dihapus, lalu kolom userId_x dan timestamp_x diubah namanya menjadi userId dan timestamp.
+
+- Simpan Dataset Gabungan (Opsional)
+Hasil akhir penggabungan data disimpan dalam file CSV agar bisa digunakan ulang tanpa perlu proses merge ulang.
+
+**Mengapa penting?**
+Penggabungan ini menciptakan dataset terintegrasi yang berisi informasi lengkap untuk setiap kombinasi userId dan movieId. Hal ini menjadi fondasi utama dalam pengembangan sistem rekomendasi berbasis konten maupun kolaboratif.
+
+---
+### 3: Pembersihan dan Seleksi Fitur
+
+Langkah ini merupakan tahap krusial dalam proses pengolahan data karena bertujuan untuk memastikan bahwa data yang digunakan bersih, relevan, dan siap digunakan untuk proses selanjutnya seperti analisis atau pemodelan.
+
+#### 3.1 Cek Statistik Deskriptif Data
+
+Langkah pertama yaitu melihat statistik deskriptif untuk mengetahui adanya nilai ekstrem atau outliers yang dapat mempengaruhi hasil analisis dan pemodelan.
+
+**Mengapa penting?**
+Outliers dapat menyebabkan bias pada hasil analisis dan menurunkan performa model. Dengan describe(), kita dapat melihat distribusi data dan mengidentifikasi nilai-nilai yang mencurigakan.
+
+#### 3.2 Cek Missing Values
+Langkah kedua adalah memeriksa apakah terdapat nilai kosong (missing values) dalam dataset.
+
+**Mengapa penting?**
+Nilai kosong bisa menyebabkan error saat pelatihan model atau menghasilkan prediksi yang tidak akurat. Data yang tidak lengkap perlu ditangani agar tidak mempengaruhi integritas analisis.
+
+#### 3.3 Cek Duplikasi Data
+Langkah selanjutnya adalah memeriksa data yang duplikat dan menghapusnya jika ditemukan.
+
+**Mengapa penting?**
+Duplikasi data bisa menyebabkan model menjadi bias, karena beberapa informasi akan dianggap lebih penting hanya karena muncul lebih sering dari seharusnya.
+
+#### 3.4 Seleksi Fitur yang Relevan
+Hanya kolom-kolom penting yang digunakan untuk proses selanjutnya, yaitu userId, movieId, rating, dan timestamp. Selanjutnya, data tersebut digabungkan dengan data film (judul dan genre).
+
+**Mengapa penting?**
+Memilih fitur yang tepat membuat proses analisis lebih efisien dan mengurangi noise pada model. Penggabungan data dengan metadata film juga memperkaya informasi untuk analisis konten dan rekomendasi.
+
+#### 3.5 Cek Ulang Missing Values Setelah Gabung dan Hapus
+Setelah proses penggabungan data, dilakukan kembali pengecekan nilai kosong dan dihapus jika ada.
+
+**Mengapa penting?**
+Penggabungan data seringkali menghasilkan nilai kosong (jika data tidak cocok sepenuhnya). Menghapus data kosong memastikan integritas data tetap terjaga.
+
+#### 3.6 Menyamakan Jenis Genre dan Mengurutkan Berdasarkan `movieId`
+Langkah terakhir dalam tahap ini adalah mengurutkan data berdasarkan `movieId` agar lebih rapi dan konsisten.
+
+**Mengapa penting?**
+Mengurutkan data mempermudah analisis selanjutnya dan memastikan data konsisten dalam urutan, terutama untuk pemrosesan batch atau pembuatan indeks.
+
+---
+### 4: Transformasi dan Pembentukan Struktur Data
+Pada tahap ini dilakukan transformasi data dari dataframe hasil penggabungan (`fix_movie`) menjadi struktur data yang lebih terorganisir dan siap digunakan untuk proses pemodelan sistem rekomendasi, terutama untuk pendekatan berbasis konten.
+
+#### 4.1 Salin dan Urutkan Data berdasarkan movieId
+Data dari `fix_movie` disalin ke dalam variabel baru bernama preparation, lalu diurutkan berdasarkan kolom movieId untuk memastikan keteraturan dan konsistensi dalam pemrosesan data.
+
+**Mengapa penting?**
+Pengurutan data membantu memastikan konsistensi dalam pemrosesan berikutnya, terutama saat mengonversi data ke dalam bentuk list atau dictionary, yang sangat bergantung pada urutan indeks.
+
+#### 4.2 Menghapus Duplikasi Data berdasarkan movieId
+Langkah selanjutnya adalah membuang data duplikat berdasarkan kolom `movieId` untuk menjaga hanya satu representasi per film.
+
+**Mengapa penting?**
+Duplikasi data bisa menyebabkan bias saat membangun model rekomendasi, karena film yang sama bisa dianggap lebih penting dari yang lain jika muncul berulang.
+
+#### 4.3 Konversi Data menjadi List
+Data yang sudah bersih dikonversi ke dalam tiga list terpisah:
+- `movie_id`: berisi daftar ID film.
+- `movie_title`: berisi daftar judul film.
+- `movie_genres`: berisi daftar genre film.
+
+**Mengapa penting?**
+List ini akan digunakan untuk membuat struktur data yang lebih efisien dan mudah dimanipulasi dalam proses rekomendasi, baik untuk keperluan tampilan, pemrosesan konten, maupun pembentukan vektor fitur.
+
+#### 4.4 Pembentukan Dataframe Final
+List yang telah dibuat kemudian digabung kembali menjadi dataframe baru bernama movie_new yang terdiri dari tiga kolom utama: `id`, `title`, dan `genres`.
+
+**Mengapa penting?**
+Dataframe ini menjadi basis dari sistem rekomendasi berbasis konten, di mana genre dan judul film akan digunakan untuk menghitung kemiripan antar film (misalnya dengan TF-IDF atau cosine similarity).
+
+---
+### 5: Encoding dan Persiapan Data untuk Model Collaborative Filtering
+Langkah ini mempersiapkan data untuk dimasukkan ke dalam model Collaborative Filtering berbasis neural network, seperti RecommenderNet. Proses ini mencakup encoding ID pengguna dan film, normalisasi rating, hingga pembagian data menjadi data latih dan validasi.
+
+#### 5.1 Seleksi Kolom Rating
+Dataset difokuskan pada kolom userId, movieId, rating, dan timestamp, karena kolom ini diperlukan untuk model rekomendasi berbasis interaksi pengguna dan film.
+
+**Mengapa penting?**
+- Fokus pada kolom userId, movieId, rating, dan timestamp memungkinkan kita untuk menyaring hanya data yang relevan.
+- Kolom-kolom ini merupakan inti interaksi pengguna dalam sistem rekomendasi berbasis Collaborative Filtering, di mana sistem belajar dari kebiasaan pengguna memberikan rating terhadap film tertentu.
+
+#### 5.2 Encoding userId dan movieId
+Agar bisa digunakan dalam model machine learning, userId dan movieId perlu diubah menjadi format numerik yang efisien melalui proses encoding.
+
+**Mengapa penting?**
+- Algoritma machine learning tidak bisa bekerja langsung dengan data bertipe string atau ID unik.
+- Dengan mengubah ID menjadi angka melalui encoding, kita dapat memanfaatkan model pembelajaran seperti neural network yang hanya menerima input numerik.
+- Encoding juga membantu dalam membangun representasi yang efisien dan memori-friendly.
+  
+#### 5.3 Mapping Encoding ke DataFrame
+Setelah membuat kamus encoding, kita mapping ke dataframe agar bisa digunakan untuk pelatihan model.
+
+**Mengapa penting?**
+- Setelah encoding dibuat, perlu dilakukan pemetaan ke dalam dataframe agar bisa digunakan sebagai input model.
+- Proses ini mengubah bentuk data dari bentuk original ke bentuk numerik yang siap dilatih, menjembatani data mentah ke input model.
+
+#### 5.4 Statistik Dataset dan Normalisasi Rating
+Kita hitung jumlah pengguna, jumlah film, dan rentang nilai rating. Rating juga dinormalisasi ke dalam rentang 0-1 agar cocok untuk output neural network.
+
+**Mengapa penting?**
+- Mengetahui jumlah user, jumlah film, dan rentang rating sangat penting untuk:
+  - Menentukan dimensi input dan output model.
+  - Menyusun arsitektur embedding dan normalisasi output.
+- Normalisasi rating ke rentang 0–1 membantu model neural network dalam mempercepat konvergensi dan mencegah bias terhadap nilai rating besar.
+
+#### 5.5 Pengacakan Data dan Simpan ke CSV
+Dataset diacak secara acak dan disimpan sebagai file CSV untuk digunakan ulang.
+
+**Mengapa penting?**
+- Pengacakan dataset (shuffling) memastikan bahwa data yang digunakan untuk pelatihan dan validasi tidak bias terhadap urutan aslinya.
+- Menyimpan dataset ke CSV membuat proses pelatihan dapat diulang atau digunakan kembali tanpa harus melakukan preprocessing dari awal hingga efisien untuk eksperimen berulang.
+
+#### 5.6 Persiapan Input dan Output Model
+Untuk model rekomendasi, kita buat:
+- x: kombinasi pasangan user dan movie
+- y: rating yang sudah dinormalisasi
+
+Kemudian dataset dibagi menjadi 80% data latih dan 20% data validasi.
+
+**Mengapa penting?**
+- Model rekomendasi membutuhkan input berupa pasangan (user, movie) agar bisa mempelajari hubungan antara pengguna dan film.
+- Rating sebagai output model harus dalam bentuk numerik dan terstandarisasi.
+- Membagi dataset menjadi train dan validation (misal 80:20) sangat penting untuk:
+  - Melatih model secara efisien
+  - Mengukur performa model pada data yang belum pernah dilihat, yang membantu mencegah overfitting.
+
 ## Modeling
 
-Pada tahapan ini, kami membangun dua jenis sistem rekomendasi untuk menyelesaikan permasalahan yang telah dijelaskan sebelumnya. Dua pendekatan yang digunakan adalah **Content-Based Filtering** dan **Collaborative Filtering**. Masing-masing pendekatan memiliki cara yang berbeda dalam memberikan rekomendasi film kepada pengguna berdasarkan data yang tersedia.
+Pada tahapan ini, saya membangun dua jenis sistem rekomendasi untuk menyelesaikan permasalahan yang telah dijelaskan sebelumnya. Dua pendekatan yang digunakan adalah **Content-Based Filtering** dan **Collaborative Filtering**. Masing-masing pendekatan memiliki cara yang berbeda dalam memberikan rekomendasi film kepada pengguna berdasarkan data yang tersedia.
 
 ### 1. Content-Based Filtering
 
@@ -188,44 +357,109 @@ Pada tahapan ini, kami membangun dua jenis sistem rekomendasi untuk menyelesaika
     - Tidak dapat memberikan rekomendasi yang sangat personal karena hanya mempertimbangkan konten, tanpa memperhitungkan preferensi individual pengguna.
     - Sistem ini dapat kekurangan keberagaman dalam rekomendasi karena hanya fokus pada kesamaan konten.
 
-**Output - Top-N Content-Based Recommendations:** 
-Setelah menghitung kesamaan, akan menampilkan 5 rekomendasi film berdasarkan pendekatan content-based filtering
+**Output - Top-N Content-Based Recommendations:**  
+Setelah menghitung kesamaan, sistem akan menampilkan 5 rekomendasi film berdasarkan pendekatan *content-based filtering*.  
+
+Sebagai contoh, jika kita memilih film **Jumanji (1995)** dari dataset, maka hasil pengecekan data film adalah sebagai berikut:
+
+| id | title           | genres                        |
+|----|-----------------|-------------------------------|
+| 1  | Jumanji (1995)  | Adventure &#124; Children &#124; Fantasy |
+
+
+Setelah memilih film **Jumanji (1995)**, sistem akan mencari 5 film lain yang memiliki *genres* yang sama yaitu `Adventure | Children | Fantasy`, berdasarkan hasil fungsi *content-based filtering* yang telah dibuat.
+
+Berikut adalah 5 rekomendasi film dengan genre yang sama:
+
+| title                                             | genres                         |
+|---------------------------------------------------|--------------------------------|
+| Santa Claus: The Movie (1985)                     | Adventure &#124; Children &#124; Fantasy |
+| NeverEnding Story, The (1984)                     | Adventure &#124; Children &#124; Fantasy |
+| NeverEnding Story II: The Next Chapter, The (1990)| Adventure &#124; Children &#124; Fantasy |
+| Escape to Witch Mountain (1975)                   | Adventure &#124; Children &#124; Fantasy |
+| Return to Oz (1985)                               | Adventure &#124; Children &#124; Fantasy |
+
+---
 
 ### 2. Collaborative Filtering
 
-**Pendekatan:** Collaborative Filtering mengandalkan data rating yang diberikan oleh pengguna untuk menemukan kesamaan antara pengguna dan memberikan rekomendasi berdasarkan preferensi pengguna lain yang mirip. Pendekatan ini lebih personal karena mempertimbangkan interaksi antar pengguna dan film.
+**Pendekatan:**  
+Collaborative Filtering dalam proyek ini menggunakan pendekatan **Neural Collaborative Filtering**, bukan metode klasik seperti Matrix Factorization (SVD). Model dibangun menggunakan TensorFlow dan Keras dengan jaringan saraf tiruan yang mempelajari pola interaksi antara pengguna dan film.
 
-- **Proses:**
-    1. **Matrix Factorization:** Menggunakan teknik **Matrix Factorization** (misalnya, Singular Value Decomposition (SVD)) untuk mengidentifikasi pola preferensi pengguna berdasarkan rating film.
-    2. **Prediksi Rating:** Setelah pemfaktoran matriks, sistem dapat memprediksi rating yang akan diberikan oleh pengguna pada film yang belum mereka tonton.
-    3. **Rekomendasi:** Film dengan rating prediksi tertinggi yang belum ditonton oleh pengguna akan direkomendasikan.
+#### Proses:
 
-- **Kelebihan:**
-    - Memberikan rekomendasi yang lebih personal karena memperhitungkan preferensi pengguna lainnya.
-    - Dapat memberikan variasi rekomendasi yang lebih besar karena mempertimbangkan interaksi pengguna dan film yang lebih banyak.
+1. **Pembangunan Model:**  
+   Model `RecommenderNet` dibuat dengan `tf.keras.Model`, berisi layer embedding untuk `user` dan `movie`, serta bias masing-masing.
 
-- **Kekurangan:**
-    - Memerlukan data rating pengguna, sehingga tidak efektif untuk pengguna baru yang belum memberikan rating.
-    - Dapat mengalami masalah **cold start** pada awalnya (yaitu, ketika data pengguna baru terlalu sedikit untuk memberikan rekomendasi yang akurat).
-    - Lebih kompleks dalam implementasi dan membutuhkan lebih banyak data untuk menghasilkan rekomendasi yang baik.
+2. **Representasi Embedding:**  
+   Setiap `user` dan `movie` direpresentasikan sebagai vektor embedding berdimensi 50 yang dilatih bersamaan.
 
-**Output - Top-N Collaborative Recommendations:**
-Dengan menggunakan Collaborative Filtering, akan menampilkan 10 rekomendasi film berdasarkan preferensi pengguna yang serupa
+3. **Kalkulasi Prediksi:**  
+   Embedding `user` dan `movie` dihitung menggunakan dot product dan ditambahkan dengan bias, kemudian diaktivasi dengan fungsi sigmoid untuk memprediksi rating (0–1).
+
+4. **Training Model:**  
+   Model dikompilasi dengan:
+   - `loss`: `BinaryCrossentropy`
+   - `optimizer`: `Adam(learning_rate=0.001)`
+   - `metrics`: `RootMeanSquaredError`
+
+   Proses training dilakukan dengan:
+   - `epochs`: 100
+   - `batch_size`: 8
+   - `validation_data`: `(x_val, y_val)`
+
+5. **Rekomendasi:**  
+   Setelah model dilatih, prediksi rating dilakukan untuk semua film yang belum ditonton oleh pengguna, dan film dengan skor tertinggi direkomendasikan.
+
+#### Kelebihan:
+- Lebih fleksibel daripada Matrix Factorization karena bisa menangkap hubungan non-linear.
+- Memberikan rekomendasi personal yang lebih akurat seiring bertambahnya data pengguna.
+
+#### Kekurangan:
+- Membutuhkan sumber daya komputasi dan waktu training yang lebih besar.
+- Kurang efektif untuk pengguna baru yang belum memiliki data interaksi (cold start problem).
+
+### Output - Top-N Collaborative Recommendations:
+
+Dengan menggunakan **Collaborative Filtering**, berikut adalah rekomendasi 10 film berdasarkan preferensi pengguna yang serupa:
 
 ---
+kita akan coba memasukkan sebuah dataset sample untuk menguji model yang sudah kita latih, dan hasil yang didapatkan adalah sebagai berikut :
+**Pengguna dengan rating tertinggi untuk film:**
+- **Dead Poets Society (1989)** : Drama
+- **Spirited Away (Sen to Chihiro no kamikakushi) (2001)** : Adventure | Animation | Fantasy
+
+**Top 10 Rekomendasi Film:**
+
+| No | Judul Film                                                       | Genre                                       |
+|----|------------------------------------------------------------------|---------------------------------------------|
+| 1  | Heavy Metal (1981)                                               | Action | Adventure | Animation | Horror | Sci-Fi |
+| 2  | Singin' in the Rain (1952)                                        | Comedy | Musical | Romance                |
+| 3  | Dead Alive (Braindead) (1992)                                     | Comedy | Fantasy | Horror                |
+| 4  | Rosencrantz and Guildenstern Are Dead (1990)                      | Comedy | Drama                            |
+| 5  | Real Genius (1985)                                               | Comedy                                   |
+| 6  | 400 Blows, The (Les quatre cents coups) (1959)                    | Crime | Drama                           |
+| 7  | Monty Python's And Now for Something Completely Different (1971)  | Comedy                                   |
+| 8  | Baraka (1992)                                                    | Documentary                              |
+| 9  | Suspiria (1977)                                                  | Horror                                    |
+| 10 | Brotherhood of the Wolf (Pacte des loups, Le) (2001)             | Action | Mystery | Thriller             |
+
+---
+
 ## Evaluation
 
 Untuk mengevaluasi sistem rekomendasi yang telah dibangun, kami menggunakan beberapa metrik evaluasi yang sesuai dengan konteks masalah dan tujuan proyek. Metrik evaluasi yang digunakan adalah **Precision@10** untuk Content-Based Filtering dan **Root Mean Squared Error (RMSE)** untuk Collaborative Filtering.
 
 ### Metrik Evaluasi
 
-1. **Precision@10** (Content-Based Filtering)
+1. **Precision@10** (Content-Based Filtering)  
    Precision@10 mengukur seberapa banyak dari 10 rekomendasi teratas yang relevan dengan preferensi pengguna. Precision@10 dihitung dengan cara menghitung proporsi item yang relevan (misalnya, rating yang lebih tinggi) di antara 10 rekomendasi teratas. Formula untuk Precision@10 adalah:
-Precision = TP / (TP + FP)
 
-Dimana:
-- **TP (True Positives)**: jumlah film yang direkomendasikan dan benar-benar relevan
-- **FP (False Positives)**: jumlah film yang direkomendasikan tapi tidak relevan
+   ![rumus precision](https://github.com/user-attachments/assets/5c44452d-c627-411b-9eaf-34d6e99104b4)
+
+   Dimana:
+   - **TP (True Positives)**: jumlah film yang direkomendasikan dan benar-benar relevan
+   - **FP (False Positives)**: jumlah film yang direkomendasikan tapi tidak relevan
 
 ### Hasil Evaluasi:
 - **TP** = 5
@@ -234,26 +468,58 @@ Dimana:
 
    Precision@10 yang lebih tinggi menunjukkan bahwa model memberikan rekomendasi yang lebih relevan dan sesuai dengan preferensi pengguna. Dalam proyek ini, **Content-Based Filtering** mencapai **Precision@10 = 100%**, yang berarti semua rekomendasi teratas relevan dengan pengguna.
 
-2. **Root Mean Squared Error (RMSE)** (Collaborative Filtering)
+2. **Root Mean Squared Error (RMSE)** (Collaborative Filtering)  
    RMSE mengukur akar kuadrat dari rata-rata kuadrat kesalahan antara nilai yang diprediksi dan nilai yang sebenarnya. Formula untuk RMSE adalah:
- ![hasil evaluasi con_fil](https://github.com/GinantiRiski1/prediksi/blob/main/pic5.png)
+   
+    ![Rumus RMSE](https://github.com/user-attachments/assets/f17fe4d4-6cfc-41ff-bf10-3216fc8fbddc)
 
    RMSE lebih sensitif terhadap outlier dan memberikan gambaran tentang kesalahan prediksi model. Semakin rendah nilai RMSE, semakin baik kualitas model dalam memberikan rekomendasi yang sesuai dengan preferensi pengguna.
 
    Dalam proyek ini, **Collaborative Filtering** memberikan hasil sebagai berikut:
-   ![hasil evaluasi col_fil](https://github.com/GinantiRiski1/prediksi/blob/main/pic3.png)
+   
+   ![Hasil Evaluasi](https://github.com/user-attachments/assets/ac20f7b0-f2eb-4ddd-990e-6a3dce2b53cf)
+   
    - **RMSE Training:** 0.1591
    - **RMSE Validation:** 0.1783
 
    RMSE Training menunjukkan bahwa rata-rata kesalahan prediksi model terhadap data training cukup kecil, sementara RMSE Validation menunjukkan bahwa model dapat generalisasi dengan baik pada data yang belum terlihat sebelumnya. Nilai RMSE yang mendekati antara training dan validation menunjukkan bahwa model tidak mengalami overfitting dan dapat memberikan prediksi yang akurat.
 
+---
+
+### Dampak terhadap Business Understanding
+
+**Pernyataan Masalah 1:** Banyak pengguna platform streaming mengalami kesulitan dalam menemukan film yang sesuai dengan preferensi mereka karena jumlah pilihan yang sangat besar.
+
+- **Jawaban:** Dengan menggunakan **Content-Based Filtering**, sistem dapat menyarankan film yang sesuai dengan genre atau jenis film yang telah ditonton pengguna sebelumnya, meningkatkan relevansi rekomendasi. **Precision@10 = 100%** menunjukkan bahwa rekomendasi yang diberikan sangat relevan dengan preferensi pengguna, menjawab masalah ini secara efektif.
+
+**Pernyataan Masalah 2:** Platform streaming memerlukan sistem rekomendasi yang efektif untuk menyarankan film berdasarkan genre atau jenis film yang pernah ditonton oleh pengguna.
+
+- **Jawaban:** **Content-Based Filtering** menggunakan analisis genre dan kesamaan konten film untuk memberikan rekomendasi, yang memberikan hasil yang sangat relevan. Dengan **Precision@10 = 100%**, sistem berhasil memberikan rekomendasi berdasarkan genre yang sesuai dengan preferensi pengguna.
+
+**Pernyataan Masalah 3:** Banyak film berkualitas tinggi yang terlewatkan oleh pengguna karena kurangnya sistem yang memperkenalkan film-film serupa dengan minat pengguna.
+
+- **Jawaban:** **Collaborative Filtering** menggunakan pola rating pengguna lain untuk menyarankan film yang lebih banyak dan bervariasi. Dengan nilai **RMSE yang rendah (0.1591 pada training dan 0.1783 pada validation)**, model ini dapat menggeneralisasi dengan baik dan memberikan rekomendasi film berkualitas tinggi yang relevan dengan preferensi pengguna.
+
+---
+
+### Goals
+
+Tujuan dari proyek ini adalah membangun sistem rekomendasi yang mampu membantu pengguna menemukan film yang relevan, memperkaya pengalaman menonton mereka, dan meningkatkan retensi pengguna platform streaming.
+
+- **Jawaban:** Dengan **Content-Based Filtering** yang mencapai **Precision@10 = 100%** dan **Collaborative Filtering** yang menunjukkan nilai **RMSE rendah**, sistem berhasil mencapai tujuan untuk meningkatkan relevansi rekomendasi film dan memberikan pengalaman menonton yang lebih personal. Model mampu memperkenalkan film berkualitas tinggi yang relevan dengan preferensi pengguna, sekaligus mengurangi kesulitan dalam menemukan film yang sesuai.
+
+---
+
 ### Hasil Evaluasi
 
 - **Content-Based Filtering:**
-  - **Precision@10 = 100%** menunjukkan bahwa sistem rekomendasi berbasis konten memberikan rekomendasi yang sangat relevan kepada pengguna.
-
+  - **Precision@10 = 100%** menunjukkan bahwa sistem rekomendasi berbasis konten memberikan rekomendasi yang sangat relevan kepada pengguna, menjawab pernyataan masalah pertama dan kedua dengan efektif.
+  
 - **Collaborative Filtering:**
-  - **RMSE Training (0.1591)** dan **RMSE Validation (0.1783)** menunjukkan bahwa model Collaborative Filtering dapat memprediksi rating dengan sangat akurat, dan kesalahan prediksi antara data training dan validation cukup kecil, mengindikasikan kemampuan generalisasi model yang baik.
+  - **RMSE Training (0.1591)** dan **RMSE Validation (0.1783)** menunjukkan bahwa model Collaborative Filtering dapat memprediksi rating dengan sangat akurat, mengurangi kesulitan dalam menemukan film berkualitas tinggi yang terlewatkan, dan membantu memperkenalkan film baru yang relevan, sesuai dengan pernyataan masalah ketiga.
+
+Secara keseluruhan, sistem rekomendasi ini berhasil memenuhi tujuan proyek dan memberikan dampak positif terhadap pengalaman pengguna dalam menemukan film yang relevan dengan preferensi mereka.
+
 
 ### Kesimpulan
 
