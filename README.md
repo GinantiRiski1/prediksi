@@ -74,75 +74,71 @@ Untuk mencapai tujuan yang telah ditetapkan, digunakan dua pendekatan utama:
 Dengan kombinasi kedua pendekatan ini, diharapkan sistem rekomendasi dapat memberikan pengalaman yang lebih personal dan akurat untuk setiap pengguna.
 
 ---
-## Data Understanding
+# 🎬 MovieLens Recommendation System Project
 
-Dalam proyek ini, data yang digunakan berasal dari [MovieLens Dataset](https://grouplens.org/datasets/movielens/), sebuah dataset yang dikembangkan oleh GroupLens Research. MovieLens merupakan salah satu dataset benchmark yang banyak digunakan dalam penelitian sistem rekomendasi. Dataset ini berisi rating yang diberikan pengguna terhadap berbagai film, lengkap dengan metadata film seperti judul dan genre. Data yang digunakan dalam proyek ini berasal dari empat file CSV yaitu `movies.csv`, `links.csv`, `ratings.csv`, dan `tags.csv`. 
+## 📥 Data Understanding
 
-Masing-masing file memiliki informasi yang berbeda, yaitu:
-     - `movies.csv`: Berisi informasi mengenai film seperti `movieId`, `title`, dan `genres`.
-     - `links.csv`: Menyediakan ID dari film yang terhubung dengan sumber eksternal (misalnya, IMDB).
-     - `ratings.csv`: Berisi data rating yang diberikan oleh pengguna terhadap film.
-     - `tags.csv`: Menyediakan tag atau label yang diberikan oleh pengguna pada film.
+### 🔗 Sumber Data
+Data diambil dari dataset publik [MovieLens Dataset - GroupLens](https://grouplens.org/datasets/movielens/). Dataset ini merupakan salah satu benchmark utama dalam riset sistem rekomendasi.
 
+---
 
-## Informasi Umum Dataset
-- **Jumlah data**:
-  - **46573 baris (entri rating)**
-  - **9 kolom (fitur)**
-- **Ukuran memori**: ~3.2 MB
+### 📌 Informasi Dataset
 
+Berikut adalah gambaran awal (raw data) dari masing-masing file yang digunakan:
 
-## Kondisi Data
+| Nama File   | Jumlah Baris | Jumlah Kolom | Keterangan                     |
+|-------------|--------------|--------------|--------------------------------|
+| movies.csv  | 9.742        | 3            | movieId, title, genres         |
+| links.csv   | 9.742        | 3            | movieId, imdbId, tmdbId        |
+| tags.csv    | 40.108       | 4            | userId, movieId, tag, timestamp|
+| ratings.csv | 100.836      | 4            | userId, movieId, rating, timestamp|
 
-### Missing Values
-| Kolom     | Nilai Non-Null | Nilai Kosong |
-|-----------|----------------|---------------|
-| title     | 44352          | 2221          |
-| genres    | 44352          | 2221          |
-| imdbId    | 44352          | 2221          |
-| tmdbId    | 44351          | 2222          |
-| tag       | 39936          | 6637          |
+---
 
-> Sebagian besar nilai kosong berada di kolom metadata film (`title`, `genres`, `imdbId`, `tmdbId`) dan `tag`, namun kita tidak akan menggunakan variabel `imdbid`, `tag` dan `tmdbid` nantinya.
+### 🧾 Uraian Fitur
 
-### Duplikasi
-- Terdapat **8946 baris data duplikat** pada keseluruhan data dalam dataset.
+**movies.csv**
+- `movieId`: ID unik untuk setiap film.
+- `title`: Judul film.
+- `genres`: Genre film (dapat lebih dari satu, dipisahkan dengan `|`).
 
-## Penjelasan Fitur
+**links.csv**
+- `movieId`: ID film yang sama dengan `movies.csv`.
+- `imdbId`: ID film di IMDb.
+- `tmdbId`: ID film di TMDb.
 
-| Fitur        | Deskripsi |
-|--------------|-----------|
-| **userId**   | ID unik pengguna. |
-| **movieId**  | ID unik film. |
-| **rating**   | Rating dari pengguna terhadap film (0.5 - 5.0). |
-| **timestamp**| Waktu rating diberikan (UNIX time). |
-| **title**    | Judul film. |
-| **genres**   | Genre film. |
-| **imdbId**   | ID film versi IMDb. |
-| **tmdbId**   | ID film versi TMDb. |
-| **tag**      | Tag/kata kunci dari pengguna (opsional). |
+**tags.csv**
+- `userId`: ID pengguna.
+- `movieId`: ID film.
+- `tag`: Kata kunci atau label dari pengguna.
+- `timestamp`: Waktu tag diberikan (format UNIX time).
 
+**ratings.csv**
+- `userId`: ID pengguna.
+- `movieId`: ID film.
+- `rating`: Penilaian pengguna terhadap film (skala 0.5 – 5.0).
+- `timestamp`: Waktu pemberian rating.
 
-## Statistik Deskriptif
+---
 
-| Fitur     | Min    | Q1     | Median | Q3     | Max      |
-|-----------|--------|--------|--------|--------|----------|
-| userId    | 1      | 21     | 33     | 49     | 66       |
-| movieId   | 1      | 480    | 1274   | 4020   | 291485   |
-| rating    | 0.5    | 3.0    | 4.0    | 5.0    | 5.0      |
-| timestamp | 8.3e+08| 9.9e+08| 1.1e+09| 1.4e+09| 1.7e+09  |
-| imdbId    | 9018   | 102926 | 111161 | 137523 | 436727   |
-| tmdbId    | 5      | 238    | 510    | 854    | 503475   |
+### ❗ Kondisi Data (Raw)
 
+#### 🔍 Missing Values
+- `movies.csv`, `links.csv`: Terdapat **2.221** nilai kosong pada kolom `title`, `genres`, dan ID eksternal.
+- `tags.csv`: Terdapat **6.637** nilai kosong pada kolom `tag`.
+- `ratings.csv`: Tidak ditemukan missing value.
 
-## Analisis Outlier
+#### 📎 Duplikat
+- `ratings.csv`: Terdapat **8.946** baris duplikat.
+- `tags.csv`: Terdapat duplikasi pada kombinasi `userId`, `movieId`, dan `tag`.
 
-- **Rating**: Tidak ditemukan outlier karena seluruh nilai berada dalam rentang sistem rating resmi.
-- **movieId** dan **tmdbId** memiliki nilai maksimum jauh di atas Q3. Perlu investigasi apakah ID tersebut sah atau noise.
-- **timestamp** memiliki rentang waktu yang besar tetapi masih masuk akal.
-- **userId** normal dan tidak menunjukkan penyimpangan.
+#### ⚠️ Outlier
+- Kolom `rating`: Tidak ada outlier karena dibatasi sistem (0.5–5.0).
+- Kolom `movieId` dan `tmdbId`: Nilai maksimum signifikan lebih tinggi dari Q3, perlu validasi lebih lanjut.
+- Kolom `timestamp`: Distribusi wajar.
 
-> Catatan: Perlu dilakukan pembersihan data lebih lanjut terutama pada baris duplikat dan kolom dengan banyak nilai kosong, namun hanya berdasarkan fitur yang akan kita gunakan saja, yaitu (`userId`, `movieId`,`rating`,`title`,`genres` dan `timestamp`.
+---
 
 ### Exploratory Data Analysis (EDA)
 
@@ -169,171 +165,139 @@ Beberapa langkah eksplorasi data yang dilakukan dalam proyek ini adalah:
 ---
 ## Data Preparation
 
-Pada bagian ini dilakukan proses **data preparation** secara menyeluruh untuk mempersiapkan data MovieLens sebelum membangun sistem rekomendasi. Tahapan ini meliputi: eksplorasi awal, penggabungan data, pembersihan data, transformasi fitur, encoding, normalisasi, serta pemisahan data. Proses ini dilakukan untuk memastikan kualitas data yang digunakan serta menyiapkan format data yang sesuai dengan pendekatan **Content-Based Filtering** dan **Collaborative Filtering (menggunakan RecommenderNet)**.
+Pada bagian ini dilakukan proses **data preparation** secara menyeluruh untuk mempersiapkan data MovieLens sebelum membangun sistem rekomendasi. Tahapan ini meliputi pembatasan jumlah data, penggabungan data, pembersihan dan seleksi fitur, transformasi struktur data, encoding, normalisasi, pemisahan data, serta ekstraksi fitur menggunakan TF-IDF. Semua proses ini bertujuan untuk memastikan kualitas data dan kesesuaian format input dengan pendekatan **Content-Based Filtering** maupun **Collaborative Filtering** menggunakan model **RecommenderNet**.
 
-## Tahapan Data Preparation :
+---
 
-### 1. Pembatasan Jumlah Data dan Eksplorasi Awal
+### 1. Pembatasan Jumlah Data
 
-Karena ukuran data asli cukup besar dan untuk menjaga efisiensi komputasi selama proses eksplorasi dan pelatihan model, maka setiap file dibatasi hingga 10.000 baris data teratas. dan eksplorasi awal kita lakukan dengan melihat struktur data disetiap dataset.
+Karena ukuran data asli cukup besar, maka setiap file dibatasi hingga 10.000 baris data teratas agar proses eksplorasi dan pelatihan model lebih efisien.
 
 **Mengapa penting?**  
-Pembatasan jumlah data dilakukan untuk menghindari beban komputasi yang terlalu tinggi dan mempercepat proses analisis awal serta pengembangan model. Hal ini juga memudahkan pemahaman terhadap struktur data dan mempercepat iterasi saat eksplorasi serta preprocessing. eksplorasi awal dilakukan untuk mengetahui informasi dataset dan fitur yang ada didalamnya.
+Pembatasan ini bertujuan untuk menghindari beban komputasi yang tinggi dan mempercepat proses pengolahan data serta iterasi eksperimen selama tahap pengembangan model.
 
 ---
+
 ### 2. Penggabungan Data (Merge)
 
-Beberapa file yang berbeda digunakan untuk membentuk satu dataset utama:
+Proses penggabungan dilakukan agar seluruh informasi dari berbagai file saling terhubung. Langkah-langkah yang dilakukan meliputi:
 
-- Penggabungan seluruh movieId
-Data movieId dari movies, links, ratings, dan tags digabungkan menjadi satu, diurutkan, dan duplikasi data dihapus agar didapatkan seluruh ID film yang unik.
+- **Penggabungan seluruh `movieId`** dari `movies`, `links`, `ratings`, dan `tags`, lalu disortir dan dideduplikasi.
+- **Penggabungan seluruh `userId`** dari `ratings` dan `tags`, lalu disortir dan dideduplikasi.
+- **Penggabungan data film** (`movies`, `links`, dan `tags`) berdasarkan `movieId`.
+- **Penggabungan dengan `ratings`** untuk menghubungkan informasi film dan pengguna dalam satu tabel.
+- **Pembersihan kolom duplikat** hasil merge (`userId_y`, `timestamp_y`), lalu penggantian nama `userId_x` dan `timestamp_x` menjadi `userId` dan `timestamp`.
+- **Simpan dataset gabungan (opsional)** ke file CSV.
 
-- Penggabungan seluruh userId
-Begitu juga userId dari ratings dan tags digabung, duplikasi data dihapus agar didapatkan seluruh ID film yang unik, lalu data diurutkan secara ascending.
-
-- Penggabungan Data Film
-Dataset movies digabungkan dengan links dan tags berdasarkan movieId untuk menambahkan metadata film dan tag pengguna.
-
-- Penggabungan dengan Ratings
-Selanjutnya, ratings digabung dengan hasil penggabungan data film sehingga terbentuk satu dataset yang lengkap mencakup informasi user, movie, rating, tag, genre, dan identifier eksternal.
-
-- Pembersihan Kolom Duplikat
-Setelah merge, kolom duplikat seperti userId_y dan timestamp_y dihapus, lalu kolom userId_x dan timestamp_x diubah namanya menjadi userId dan timestamp.
-
-- Simpan Dataset Gabungan (Opsional)
-Hasil akhir penggabungan data disimpan dalam file CSV agar bisa digunakan ulang tanpa perlu proses merge ulang.
-
-**Mengapa penting?**
-Penggabungan ini menciptakan dataset terintegrasi yang berisi informasi lengkap untuk setiap kombinasi userId dan movieId. Hal ini menjadi fondasi utama dalam pengembangan sistem rekomendasi berbasis konten maupun kolaboratif.
+**Mengapa penting?**  
+Penggabungan ini menciptakan dataset yang terintegrasi dan kaya informasi, menjadi fondasi utama dalam pengembangan sistem rekomendasi berbasis konten maupun kolaboratif.
 
 ---
-### 3: Pembersihan dan Seleksi Fitur
 
-Langkah ini merupakan tahap krusial dalam proses pengolahan data karena bertujuan untuk memastikan bahwa data yang digunakan bersih, relevan, dan siap digunakan untuk proses selanjutnya seperti analisis atau pemodelan.
+### 3. Seleksi Fitur dan Pembersihan Data
 
-#### 3.1 Cek Statistik Deskriptif Data
+Setelah proses penggabungan, dilakukan pemilihan fitur penting dan penanganan data tidak bersih:
 
-Langkah pertama yaitu melihat statistik deskriptif untuk mengetahui adanya nilai ekstrem atau outliers yang dapat mempengaruhi hasil analisis dan pemodelan.
+- Hanya kolom `userId`, `movieId`, `rating`, dan `timestamp` yang digunakan untuk model kolaboratif.
+- Data film seperti `title` dan `genres` dipertahankan untuk model berbasis konten.
+- Menghapus data duplikat berdasarkan `movieId`.
 
-**Mengapa penting?**
-Outliers dapat menyebabkan bias pada hasil analisis dan menurunkan performa model. Dengan describe(), kita dapat melihat distribusi data dan mengidentifikasi nilai-nilai yang mencurigakan.
-
-#### 3.2 Cek Missing Values
-Langkah kedua adalah memeriksa apakah terdapat nilai kosong (missing values) dalam dataset.
-
-**Mengapa penting?**
-Nilai kosong bisa menyebabkan error saat pelatihan model atau menghasilkan prediksi yang tidak akurat. Data yang tidak lengkap perlu ditangani agar tidak mempengaruhi integritas analisis.
-
-#### 3.3 Cek Duplikasi Data
-Langkah selanjutnya adalah memeriksa data yang duplikat dan menghapusnya jika ditemukan.
-
-**Mengapa penting?**
-Duplikasi data bisa menyebabkan model menjadi bias, karena beberapa informasi akan dianggap lebih penting hanya karena muncul lebih sering dari seharusnya.
-
-#### 3.4 Seleksi Fitur yang Relevan
-Hanya kolom-kolom penting yang digunakan untuk proses selanjutnya, yaitu userId, movieId, rating, dan timestamp. Selanjutnya, data tersebut digabungkan dengan data film (judul dan genre).
-
-**Mengapa penting?**
-Memilih fitur yang tepat membuat proses analisis lebih efisien dan mengurangi noise pada model. Penggabungan data dengan metadata film juga memperkaya informasi untuk analisis konten dan rekomendasi.
-
-#### 3.5 Cek Ulang Missing Values Setelah Gabung dan Hapus
-Setelah proses penggabungan data, dilakukan kembali pengecekan nilai kosong dan dihapus jika ada.
-
-**Mengapa penting?**
-Penggabungan data seringkali menghasilkan nilai kosong (jika data tidak cocok sepenuhnya). Menghapus data kosong memastikan integritas data tetap terjaga.
-
-#### 3.6 Menyamakan Jenis Genre dan Mengurutkan Berdasarkan `movieId`
-Langkah terakhir dalam tahap ini adalah mengurutkan data berdasarkan `movieId` agar lebih rapi dan konsisten.
-
-**Mengapa penting?**
-Mengurutkan data mempermudah analisis selanjutnya dan memastikan data konsisten dalam urutan, terutama untuk pemrosesan batch atau pembuatan indeks.
+**Mengapa penting?**  
+Pemilihan fitur yang tepat memastikan model hanya menggunakan informasi yang relevan, menghindari noise yang dapat menurunkan performa.
 
 ---
-### 4: Transformasi dan Pembentukan Struktur Data
-Pada tahap ini dilakukan transformasi data dari dataframe hasil penggabungan (`fix_movie`) menjadi struktur data yang lebih terorganisir dan siap digunakan untuk proses pemodelan sistem rekomendasi, terutama untuk pendekatan berbasis konten.
 
-#### 4.1 Salin dan Urutkan Data berdasarkan movieId
-Data dari `fix_movie` disalin ke dalam variabel baru bernama preparation, lalu diurutkan berdasarkan kolom movieId untuk memastikan keteraturan dan konsistensi dalam pemrosesan data.
+### 4. Transformasi dan Pembentukan Struktur Data
 
-**Mengapa penting?**
-Pengurutan data membantu memastikan konsistensi dalam pemrosesan berikutnya, terutama saat mengonversi data ke dalam bentuk list atau dictionary, yang sangat bergantung pada urutan indeks.
+Langkah ini dilakukan untuk menyiapkan struktur data yang sesuai untuk proses rekomendasi.
 
-#### 4.2 Menghapus Duplikasi Data berdasarkan movieId
-Langkah selanjutnya adalah membuang data duplikat berdasarkan kolom `movieId` untuk menjaga hanya satu representasi per film.
+#### 4.1 Salin dan Urutkan Berdasarkan `movieId`
+Dataset `fix_movie` disalin ke variabel baru (`preparation`) dan diurutkan berdasarkan `movieId`.
 
-**Mengapa penting?**
-Duplikasi data bisa menyebabkan bias saat membangun model rekomendasi, karena film yang sama bisa dianggap lebih penting dari yang lain jika muncul berulang.
+**Mengapa penting?**  
+Menjaga konsistensi urutan data sangat penting dalam proses pemodelan dan penyusunan vektor fitur.
 
-#### 4.3 Konversi Data menjadi List
-Data yang sudah bersih dikonversi ke dalam tiga list terpisah:
-- `movie_id`: berisi daftar ID film.
-- `movie_title`: berisi daftar judul film.
-- `movie_genres`: berisi daftar genre film.
+#### 4.2 Hapus Duplikasi Berdasarkan `movieId`
+Menghapus baris duplikat agar setiap film hanya direpresentasikan sekali.
 
-**Mengapa penting?**
-List ini akan digunakan untuk membuat struktur data yang lebih efisien dan mudah dimanipulasi dalam proses rekomendasi, baik untuk keperluan tampilan, pemrosesan konten, maupun pembentukan vektor fitur.
+**Mengapa penting?**  
+Menghindari bias pada model akibat kemunculan ganda dari film yang sama.
+
+#### 4.3 Konversi Menjadi List
+Data bersih dikonversi ke dalam tiga list:
+- `movie_id`
+- `movie_title`
+- `movie_genres`
+
+**Mengapa penting?**  
+List ini lebih efisien dan fleksibel untuk diolah dalam proses pembentukan vektor fitur dan tampilan rekomendasi.
 
 #### 4.4 Pembentukan Dataframe Final
-List yang telah dibuat kemudian digabung kembali menjadi dataframe baru bernama movie_new yang terdiri dari tiga kolom utama: `id`, `title`, dan `genres`.
+List di atas kemudian digabung kembali menjadi dataframe `movie_new` berisi tiga kolom: `id`, `title`, dan `genres`.
 
-**Mengapa penting?**
-Dataframe ini menjadi basis dari sistem rekomendasi berbasis konten, di mana genre dan judul film akan digunakan untuk menghitung kemiripan antar film (misalnya dengan TF-IDF atau cosine similarity).
+**Mengapa penting?**  
+Dataframe ini menjadi dasar sistem rekomendasi berbasis konten yang memanfaatkan genre dan judul film.
 
 ---
-### 5: Encoding dan Persiapan Data untuk Model Collaborative Filtering
-Langkah ini mempersiapkan data untuk dimasukkan ke dalam model Collaborative Filtering berbasis neural network, seperti RecommenderNet. Proses ini mencakup encoding ID pengguna dan film, normalisasi rating, hingga pembagian data menjadi data latih dan validasi.
 
-#### 5.1 Seleksi Kolom Rating
-Dataset difokuskan pada kolom userId, movieId, rating, dan timestamp, karena kolom ini diperlukan untuk model rekomendasi berbasis interaksi pengguna dan film.
+### 5. Ekstraksi Fitur dengan TF-IDF
 
-**Mengapa penting?**
-- Fokus pada kolom userId, movieId, rating, dan timestamp memungkinkan kita untuk menyaring hanya data yang relevan.
-- Kolom-kolom ini merupakan inti interaksi pengguna dalam sistem rekomendasi berbasis Collaborative Filtering, di mana sistem belajar dari kebiasaan pengguna memberikan rating terhadap film tertentu.
+Langkah ini dilakukan untuk memproses teks genre menjadi representasi numerik yang bisa dihitung kemiripannya.
 
-#### 5.2 Encoding userId dan movieId
-Agar bisa digunakan dalam model machine learning, userId dan movieId perlu diubah menjadi format numerik yang efisien melalui proses encoding.
+- Genre diformat ulang menjadi satu string per film.
+- Diterapkan TF-IDF Vectorizer terhadap kolom genre.
 
-**Mengapa penting?**
-- Algoritma machine learning tidak bisa bekerja langsung dengan data bertipe string atau ID unik.
-- Dengan mengubah ID menjadi angka melalui encoding, kita dapat memanfaatkan model pembelajaran seperti neural network yang hanya menerima input numerik.
-- Encoding juga membantu dalam membangun representasi yang efisien dan memori-friendly.
-  
-#### 5.3 Mapping Encoding ke DataFrame
-Setelah membuat kamus encoding, kita mapping ke dataframe agar bisa digunakan untuk pelatihan model.
+**Mengapa penting?**  
+TF-IDF memungkinkan kita menghitung pentingnya genre tertentu dalam koleksi film. Ini menjadi dasar dalam pengukuran kemiripan antar film untuk sistem rekomendasi berbasis konten, misalnya dengan cosine similarity.
 
-**Mengapa penting?**
-- Setelah encoding dibuat, perlu dilakukan pemetaan ke dalam dataframe agar bisa digunakan sebagai input model.
-- Proses ini mengubah bentuk data dari bentuk original ke bentuk numerik yang siap dilatih, menjembatani data mentah ke input model.
+---
 
-#### 5.4 Statistik Dataset dan Normalisasi Rating
-Kita hitung jumlah pengguna, jumlah film, dan rentang nilai rating. Rating juga dinormalisasi ke dalam rentang 0-1 agar cocok untuk output neural network.
+### 6. Encoding dan Normalisasi untuk Collaborative Filtering
 
-**Mengapa penting?**
-- Mengetahui jumlah user, jumlah film, dan rentang rating sangat penting untuk:
-  - Menentukan dimensi input dan output model.
-  - Menyusun arsitektur embedding dan normalisasi output.
-- Normalisasi rating ke rentang 0–1 membantu model neural network dalam mempercepat konvergensi dan mencegah bias terhadap nilai rating besar.
+Langkah ini menyiapkan data agar bisa digunakan oleh model neural network (RecommenderNet).
 
-#### 5.5 Pengacakan Data dan Simpan ke CSV
-Dataset diacak secara acak dan disimpan sebagai file CSV untuk digunakan ulang.
+#### 6.1 Encoding `userId` dan `movieId`
+ID pengguna dan film diubah ke format numerik menggunakan mapping dictionary.
 
-**Mengapa penting?**
-- Pengacakan dataset (shuffling) memastikan bahwa data yang digunakan untuk pelatihan dan validasi tidak bias terhadap urutan aslinya.
-- Menyimpan dataset ke CSV membuat proses pelatihan dapat diulang atau digunakan kembali tanpa harus melakukan preprocessing dari awal hingga efisien untuk eksperimen berulang.
+**Mengapa penting?**  
+Model pembelajaran mesin memerlukan input numerik. Encoding ini juga membantu efisiensi memori dan performa model.
 
-#### 5.6 Persiapan Input dan Output Model
-Untuk model rekomendasi, kita buat:
-- x: kombinasi pasangan user dan movie
-- y: rating yang sudah dinormalisasi
+#### 6.2 Mapping Encoding ke Dataframe
+Hasil encoding dimasukkan kembali ke dataframe sebagai kolom baru.
 
-Kemudian dataset dibagi menjadi 80% data latih dan 20% data validasi.
+**Mengapa penting?**  
+Pemetaan ke dataframe menjembatani data mentah dan input model pelatihan.
 
-**Mengapa penting?**
-- Model rekomendasi membutuhkan input berupa pasangan (user, movie) agar bisa mempelajari hubungan antara pengguna dan film.
-- Rating sebagai output model harus dalam bentuk numerik dan terstandarisasi.
-- Membagi dataset menjadi train dan validation (misal 80:20) sangat penting untuk:
-  - Melatih model secara efisien
-  - Mengukur performa model pada data yang belum pernah dilihat, yang membantu mencegah overfitting.
+#### 6.3 Normalisasi Rating
+Rating dinormalisasi ke rentang 0–1.
+
+**Mengapa penting?**  
+Normalisasi mempercepat konvergensi pelatihan dan menghindari dominasi nilai rating tinggi.
+
+---
+
+### 7. Pengacakan dan Penyimpanan Dataset
+
+Dataset yang telah selesai diacak secara acak (shuffled) dan disimpan ke file CSV.
+
+**Mengapa penting?**  
+Shuffling mencegah urutan data mempengaruhi pelatihan model. Penyimpanan memungkinkan penggunaan ulang tanpa preprocessing ulang.
+
+---
+
+### 8. Pembentukan Input dan Output Model
+
+Dataset dipisah menjadi:
+
+- `x`: pasangan encoded `(userId, movieId)`
+- `y`: rating yang telah dinormalisasi
+
+Kemudian dilakukan split data menjadi 80% training dan 20% validation.
+
+**Mengapa penting?**  
+Format ini sesuai kebutuhan model RecommenderNet dan pemisahan data memastikan kemampuan generalisasi model bisa diuji.
+
+---
 
 ## Modeling
 
