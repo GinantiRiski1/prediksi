@@ -74,16 +74,15 @@ Untuk mencapai tujuan yang telah ditetapkan, digunakan dua pendekatan utama:
 Dengan kombinasi kedua pendekatan ini, diharapkan sistem rekomendasi dapat memberikan pengalaman yang lebih personal dan akurat untuk setiap pengguna.
 
 ---
-# 🎬 MovieLens Recommendation System Project
 
-## 📥 Data Understanding
+## Data Understanding
 
-### 🔗 Sumber Data
+### Sumber Data
 Data diambil dari dataset publik [MovieLens Dataset - GroupLens](https://grouplens.org/datasets/movielens/). Dataset ini merupakan salah satu benchmark utama dalam riset sistem rekomendasi.
 
 ---
 
-### 📌 Informasi Dataset
+### Informasi Dataset
 
 Berikut adalah gambaran awal (raw data) dari masing-masing file yang digunakan:
 
@@ -96,7 +95,7 @@ Berikut adalah gambaran awal (raw data) dari masing-masing file yang digunakan:
 
 ---
 
-### 🧾 Uraian Fitur
+### Uraian Fitur
 
 **movies.csv**
 - `movieId`: ID unik untuk setiap film.
@@ -122,18 +121,18 @@ Berikut adalah gambaran awal (raw data) dari masing-masing file yang digunakan:
 
 ---
 
-### ❗ Kondisi Data (Raw)
+### Kondisi Data (Raw)
 
-#### 🔍 Missing Values
+#### Missing Values
 - `movies.csv`, `links.csv`: Terdapat **2.221** nilai kosong pada kolom `title`, `genres`, dan ID eksternal.
 - `tags.csv`: Terdapat **6.637** nilai kosong pada kolom `tag`.
 - `ratings.csv`: Tidak ditemukan missing value.
 
-#### 📎 Duplikat
+#### Duplikat
 - `ratings.csv`: Terdapat **8.946** baris duplikat.
 - `tags.csv`: Terdapat duplikasi pada kombinasi `userId`, `movieId`, dan `tag`.
 
-#### ⚠️ Outlier
+#### Outlier
 - Kolom `rating`: Tidak ada outlier karena dibatasi sistem (0.5–5.0).
 - Kolom `movieId` dan `tmdbId`: Nilai maksimum signifikan lebih tinggi dari Q3, perlu validasi lebih lanjut.
 - Kolom `timestamp`: Distribusi wajar.
